@@ -10,8 +10,8 @@ pygame.font.init()
 pygame.mixer.init()
 
 # Window creation
-WIDTH, HEIGHT = (1920, 1080)
-# WIDTH, HEIGHT = (1800, 900)
+# WIDTH, HEIGHT = (1920, 1080)
+WIDTH, HEIGHT = (1800, 900)
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Registration Plates Quiz")
 
@@ -20,12 +20,14 @@ active_color = (0, 255, 255)
 background_color = (255, 255, 255)
 button_color = (150, 150, 150)
 active_button_color = (100, 100, 100)
-text_color = (255, 255, 255)
+white = (255, 255, 255)
 black = (0, 0, 0)
 
 # Font
 font = pygame.font.Font(None, 32)
 font_2 = pygame.font.Font(None, 72)
+font_3 = pygame.font.Font(None, 18)
+
 
 # Variables
 play = False
@@ -40,6 +42,7 @@ score = 0
 app_logo = pygame.image.load(os.path.join('Images', 'title_v1.png'))
 registration_template = pygame.image.load(os.path.join('Images', 'registration_template.png'))
 car_plates_map = pygame.image.load(os.path.join('Images', 'carplates.png'))
+car_plates_map = pygame.transform.scale(car_plates_map, (0.9*WIDTH, 0.9*HEIGHT))
 
 
 # Export list to the file
@@ -79,13 +82,13 @@ def draw_element(color, element, position):
 
 def draw_rect(position, text):
     pygame.draw.rect(WIN, button_color, position)
-    pygame.draw.rect(WIN, text_color, position, 2)
+    pygame.draw.rect(WIN, white, position, 2)
     write_text(text,
                (position[0] + position[2] // 2, position[1] + position[3]// 2))
 
 
 def write_text(text, location):
-    text_surface = font.render(text, True, text_color)
+    text_surface = font.render(text, True, white)
     text_location = text_surface.get_rect(center=location)
     WIN.blit(text_surface, text_location)
 
@@ -98,37 +101,40 @@ def draw_list(position, options, active_list, active_choice):
         for i, option in enumerate(options):
             y = position[1] + (i + 1) * position.height
             pygame.draw.rect(WIN, button_color, (position[0], y, position.width, position.height))
-            pygame.draw.rect(WIN, text_color, (position[0], y, position.width, position.height), 2)
+            pygame.draw.rect(WIN, white, (position[0], y, position.width, position.height), 2)
             write_text(option, (position[0] + position.width // 2, y + position.height // 2))
 
 
-def game(play, score):
+def game(_play, _score):
+
     entity = Voivodeship(voivodeship=active_option, level=active_level_option)
-    score_surface = font_2.render("Score: " + str(score), True, black)
     registration, county, answers = entity.ask_question()
+
+    score_surface = font_2.render("Score: " + str(_score), True, black)
     registration_surface = font_2.render(registration, True, black)
+
     registration_position = (0.5 * WIDTH - 0.5 * registration_surface.get_width()
                              + 0.27 * registration_surface.get_width(),
                              0.04 * HEIGHT + 0.5 * registration_template.get_height() -
                              0.42 * registration_surface.get_height())
 
-    while play:
+    while _play:
 
         draw_element((175, 238, 238), registration_template, registration_template_position)
         score_position = (WIDTH - 2 * score_surface.get_width(), registration_position.__getitem__(1))
         WIN.blit(registration_surface, registration_position)
         WIN.blit(score_surface, score_position)
 
-        for event in pygame.event.get():
+        for _event in pygame.event.get():
 
-            if event.type == pygame.QUIT:
-                play = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    play = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if exit_button.collidepoint(event.pos):
-                    play = False
+            if _event.type == pygame.QUIT:
+                _play = False
+            elif _event.type == pygame.KEYDOWN:
+                if _event.key == pygame.K_ESCAPE:
+                    _play = False
+            elif _event.type == pygame.MOUSEBUTTONDOWN:
+                if exit_button.collidepoint(_event.pos):
+                    _play = False
                 for i in range(2):
                     for j in range(2):
                         if i == 1:
@@ -138,17 +144,17 @@ def game(play, score):
 
                         y = first_answer.y + j * first_answer.y
 
-                        square_option = pygame.Rect(x, y, first_answer.width, first_answer.height)
+                        _square_option = pygame.Rect(x, y, first_answer.width, first_answer.height)
 
-                        if square_option.collidepoint(event.pos):
+                        if _square_option.collidepoint(_event.pos):
                             if answers[2 * i + j] == county:
-                                score += 1
-                                play = not play
-                                game(True, score)
+                                _score += 1
+                                _play = not _play
+                                game(True, _score)
                             else:
-                                score = 0
-                                play = not play
-                                game(True, score)
+                                _score = 0
+                                _play = not _play
+                                game(True, _score)
 
         for i in range(2):
             for j in range(2):
@@ -170,6 +176,7 @@ run = True
 while run:
 
     clock.tick(60)
+    # draw_element(background_color, car_plates_map, (WIDTH/2-car_plates_map.get_width()/2, HEIGHT/2-car_plates_map.get_height()/2))
     draw_element(background_color, app_logo, (0.5*WIDTH-0.5*app_logo.get_width(), 0.02*HEIGHT))
 
     for event in pygame.event.get():
@@ -210,8 +217,11 @@ while run:
                         active_level_option = option
                         full_level_list = False
             if play_button.collidepoint(event.pos):
-                play = True
-                game(play, score)
+                if not active_option == "Choose voivodeship" and not active_level_option == "Choose level":
+                    game(True, score)
+                # else:
+                #     WIN.blit()
+
 
     draw_rect(play_button, "Play!")
     draw_rect(exit_button, "Exit")

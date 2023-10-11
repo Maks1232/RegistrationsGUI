@@ -19,14 +19,16 @@ class Voivodeship:
 
     def get_random_question(self):
 
-        # voivodeship_options = import_list(file_name='voivodeship_options')
-        # loaded_dicts = import_list('dicts.pickle2')
-
         # wybierzlosowy klucz i wartość (mapowanie z przekazywanej zmiennej tekstowej na indeks listy w słowniku)
         if self.voivodeship == self.voivodeship_options[-1]:
-            for dict in self.loaded_dicts:
-                self.merged_dicts.update(dict)
+            for _dict in self.loaded_dicts:
+                self.merged_dicts.update(_dict)
             id, county = random.choice(list(self.merged_dicts.items()))
+        elif self.level == "Hard":
+            for _dict in self.loaded_dicts:
+                self.merged_dicts.update(_dict)
+            id, county = random.choice(
+                list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items()))
         else:
             id, county = random.choice(list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items()))
 
@@ -39,13 +41,12 @@ class Voivodeship:
 
         while len(answers) < 4:
             # wybieramy losową wartość ze słownika, ale tylko jeśli nie jest już na liście
-            if self.voivodeship == self.voivodeship_options[-1]:
+            if self.voivodeship == self.voivodeship_options[-1] or self.level == "Hard":
                 random_answer = random.choice(list(self.merged_dicts.values()))
             else:
                 random_answer = random.choice(
                     list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].values()))
 
-            # if random_answer[0].lower() == correct_answer[0].lower() and random_answer not in answers:
             if random_answer not in answers:
                 answers.append(random_answer)
 

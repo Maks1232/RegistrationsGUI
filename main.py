@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import pygame
 import os
@@ -16,17 +17,17 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Registration Plates Quiz")
 
 # Kolory
-active_color = (0, 255, 255)
-background_color = (255, 255, 255)
-button_color = (150, 150, 150)
-active_button_color = (100, 100, 100)
 white = (255, 255, 255)
+aqua = (0, 255, 255)
+red = (255, 0, 0)
+grey = (150, 150, 150)
+dark_grey = (100, 100, 100)
+green = (60, 179, 113)
 black = (0, 0, 0)
 
 # Font
 font = pygame.font.Font(None, 32)
 font_2 = pygame.font.Font(None, 72)
-font_3 = pygame.font.Font(None, 18)
 
 
 # Variables
@@ -72,7 +73,7 @@ first_answer = pygame.Rect(WIDTH*0.1, 0.4*HEIGHT-0.08*HEIGHT, HEIGHT*0.5, 0.1*HE
 
 # Opcje pola rozwijanego
 voivodeship_options = import_list(file_name='voivodeship_options')
-level_options = ["Easy", "Hard"]
+level_options = ["Easy", "Medium", "Hard"]
 
 
 def draw_element(color, element, position):
@@ -80,7 +81,7 @@ def draw_element(color, element, position):
     WIN.blit(element, position)
 
 
-def draw_rect(position, text):
+def draw_rect(position, text, button_color):
     pygame.draw.rect(WIN, button_color, position)
     pygame.draw.rect(WIN, white, position, 2)
     write_text(text,
@@ -94,13 +95,13 @@ def write_text(text, location):
 
 
 def draw_list(position, options, active_list, active_choice):
-    draw_rect(position, active_choice)
+    draw_rect(position, active_choice, grey)
 
     if active_list:
 
         for i, option in enumerate(options):
             y = position[1] + (i + 1) * position.height
-            pygame.draw.rect(WIN, button_color, (position[0], y, position.width, position.height))
+            pygame.draw.rect(WIN, grey, (position[0], y, position.width, position.height))
             pygame.draw.rect(WIN, white, (position[0], y, position.width, position.height), 2)
             write_text(option, (position[0] + position.width // 2, y + position.height // 2))
 
@@ -164,9 +165,9 @@ def game(_play, _score):
                     x = WIDTH - first_answer.x - first_answer.width
                 y = first_answer.y + j * first_answer.y
 
-                draw_rect((x, y, first_answer.width, first_answer.height), answers[2 * i + j])
+                draw_rect((x, y, first_answer.width, first_answer.height), answers[2 * i + j], grey)
 
-        draw_rect(exit_button, "Exit")
+        draw_rect(exit_button, "Exit", grey)
         pygame.display.flip()
 
 
@@ -176,8 +177,9 @@ run = True
 while run:
 
     clock.tick(60)
-    # draw_element(background_color, car_plates_map, (WIDTH/2-car_plates_map.get_width()/2, HEIGHT/2-car_plates_map.get_height()/2))
-    draw_element(background_color, app_logo, (0.5*WIDTH-0.5*app_logo.get_width(), 0.02*HEIGHT))
+    # draw_element(background_color, car_plates_map,
+    #   (WIDTH/2-car_plates_map.get_width()/2, HEIGHT/2-car_plates_map.get_height()/2))
+    draw_element(white, app_logo, (0.5 * WIDTH - 0.5 * app_logo.get_width(), 0.02 * HEIGHT))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -219,12 +221,12 @@ while run:
             if play_button.collidepoint(event.pos):
                 if not active_option == "Choose voivodeship" and not active_level_option == "Choose level":
                     game(True, score)
-                # else:
-                #     WIN.blit()
 
-
-    draw_rect(play_button, "Play!")
-    draw_rect(exit_button, "Exit")
+    if active_option != 'Choose voivodeship' and active_level_option != 'Choose level':
+        draw_rect(play_button, "Play!", green)
+    else:
+        draw_rect(play_button, "Play!", grey)
+    draw_rect(exit_button, "Exit", grey)
     draw_list(drop_down, voivodeship_options, active_list=full_list, active_choice=active_option)
     draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)
 
@@ -236,32 +238,22 @@ while run:
 # for voivodeship in range(len(loaded_dicts)):
 #     for key, value in loaded_dicts[voivodeship].items():
 #         values_list.append(value)
-#
-# levenshtein_matrix = np.zeros((len(values_list), len(values_list)))
-#
-# for num, element in enumerate(values_list):
-#     for num_2, _element in enumerate(values_list):
-#         levenshtein_matrix[num][num_2] = Levenshtein.distance(element, _element)
-#
+
+values_list = import_list('values_409_list.pickle')
+levenshtein_matrix = np.zeros((len(values_list), len(values_list)))
+
+for num, element in enumerate(values_list):
+    for num_2, _element in enumerate(values_list):
+        levenshtein_matrix[num][num_2] = Levenshtein.distance(element, _element)
+
+df = pd.DataFrame(levenshtein_matrix, columns=values_list, index=values_list)
+
+# df.to_pickle('levenshtein_matrix.pickle')
+
+
+
+
 # print(levenshtein_matrix)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # print(loaded_dicts['Podlaskie'])
 # print(voivodeship_options[0])
@@ -273,5 +265,4 @@ while run:
 #     for j in range(409):
 #         if j>i:
 #             df.iat[i, j] = ''
-# print(df)
-# df.to_csv("aaaa.csv", index=False)
+

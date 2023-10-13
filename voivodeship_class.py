@@ -51,15 +51,17 @@ class Voivodeship:
 
         if self.level == 'Hard':
             col = self.levenshtein_matrix[correct_answer]
-            col = col.sort_values().to_frame()
+            col = col.to_frame().sort_values(by=correct_answer)
             iterator = 0
 
         while len(answers) < 4:
             # wybieramy losową wartość ze słownika, ale tylko jeśli nie jest już na liście
             if self.voivodeship == self.voivodeship_options[-1] and (self.level == "Medium" or self.level == 'Easy'):
-            # if self.level == "Medium":
                 random_answer = random.choice(list(self.merged_dicts.values()))
             elif self.level == "Hard":
+                random_answer = col.index[iterator]
+                iterator += 1
+            elif self.level == "Unicum":
                 random_answer = col.index[iterator]
                 iterator += 1
             else:

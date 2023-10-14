@@ -233,20 +233,151 @@ while run:
     pygame.display.flip()
 
 
-# loaded_dicts = import_list('dicts.pickle2')
+
+# zamienione_1 = False
+# zamienione_2 = False
+# zamienione_3 = False
+# zamienione_4 = False
+# zamienione_5 = False
+# zamienione_6 = False
+# zamienione_7 = False
+# zamienione_8 = False
+#
+#
+# do_zamiany_1 = "Suwałki"
+# po_zmianie_1 = "Suwałki(X)"
+#
+# do_zamiany_2 = "Skierniewice"
+# po_zmianie_2 = "Skierniewice(X)"
+#
+# do_zamiany_3 = "WejherowoX"
+# po_zmianie_3 = "Wejherowo(powiat)"
+#
+# do_zamiany_4 = "Suwałki(powiat)"
+# po_zmianie_4 = "Suwałki(miasto)"
+#
+# do_zamiany_5 = "Wrocław(miasto)"
+# po_zmianie_5 = "Wrocław(miasto 2)"
+#
+# do_zamiany_6 = "Poznań(miasto)"
+# po_zmianie_6 = "Poznań(miasto 2)"
+#
+# do_zamiany_7 = "Łódź(miasto)"
+# po_zmianie_7 = "Łódź(miasto 2)"
+#
+# do_zamiany_8 = "Skierniewice(powiat)"
+# po_zmianie_8 = "Skierniewice(miasto)"
+#
+# for i, value in enumerate(values_list):
+#     if value == do_zamiany_1 and not zamienione_1:
+#         values_list[i] = po_zmianie_1
+#         zamienione_1 = True
+#     if value == do_zamiany_2 and not zamienione_2:
+#         values_list[i] = po_zmianie_2
+#         zamienione_2 = True
+#     if value == do_zamiany_3 and not zamienione_3:
+#         values_list[i] = po_zmianie_3
+#         zamienione_3 = True
+#     if value == do_zamiany_4 and not zamienione_4:
+#         values_list[i] = po_zmianie_4
+#         zamienione_4 = True
+#     if value == do_zamiany_5 and not zamienione_5:
+#         values_list[i] = po_zmianie_5
+#         zamienione_5 = True
+#     if value == do_zamiany_6 and not zamienione_6:
+#         values_list[i] = po_zmianie_6
+#         zamienione_6 = True
+#     if value == do_zamiany_7 and not zamienione_7:
+#         values_list[i] = po_zmianie_7
+#         zamienione_7 = True
+#     if value == do_zamiany_8 and not zamienione_8:
+#         values_list[i] = po_zmianie_8
+#         zamienione_8 = True
+#
+# export_list(values_list, 'values_409_list.pickle')
+
+# with open('lista_indeksow_poprawiona.txt', 'r') as file:
+#     # Odczytaj zawartość pliku
+#     lista_indeksow = [linia.strip() for linia in file.readlines()]
+#
+# with open('lista_powiatow_poprawiona.txt', 'r') as file:
+#     # Odczytaj zawartość pliku
+#     values_list = [linia.strip() for linia in file.readlines()]
+#
+# print(lista_indeksow)
+# print(values_list)
+#
+
+
+# #zapis stringów do pliku w kolumnach
+# with open('lista_indeksow_poprawiona.txt', 'w') as file:
+#     file.writelines('\n'.join(key_list))
+#
+# #zapis stringów do pliku w kolumnach
+# with open('lista_powiatow_poprawiona.txt', 'w') as file:
+#     file.writelines('\n'.join(values_list))
+
+# dicts_pickle_2 = import_list('dicts.pickle2')
+# for dict in dicts_pickle_2:
+#     if 'BS' in dict:
+#         dict['BS'] = 'Suwałki(miasto)'
+#     if 'BSU' in dict:
+#         dict['BS'] = 'Suwałki(powiat)'
+#     if 'DX' in dict:
+#         dict['DX'] = 'Wrocław(miasto 2)'
+#     if 'ED' in dict:
+#         dict['ED'] = 'Łódź(miasto 2)'
+#     if 'ESK' in dict:
+#         dict['ESK'] = 'Skierniewice(powiat)'
+#     if 'ES' in dict:
+#         dict['ES'] = 'Skierniewice(miasto)'
+#     if 'GWO' in dict:
+#         dict['GWO'] = 'Wejherowo(powiat 2)'
+#     if 'GWE' in dict:
+#         dict['GWE'] = 'Wejherowo(powiat)'
+#     if 'KBC' in dict:
+#         dict['KBC'] = 'Bochnia(powiat)'
+#     if 'KBA' in dict:
+#         dict['KBA'] = 'Bochnia(powiat 2)'
+#     if 'KK' in dict:
+#         dict['KK'] = 'Kraków(miasto 2)'
+#     if 'PY' in dict:
+#         dict['PY'] = 'Poznań(miasto 2)'
+#     if 'ZZ' in dict:
+#         dict['ZZ'] = 'Szczecin(miasto 2)'
+#     if 'ZS' in dict:
+#         dict['ZS'] = 'Szczecin(miasto)'
+# export_list(dicts_pickle_2, 'dicts.pickle3')
+# yyy = {}
+# xxx = import_list('dicts.pickle3')
+# for dict_ in xxx:
+#     yyy.update(dict_)
+# export_list(yyy, 'testy.pickle')
+
+
+# loaded_dicts = import_list('dicts.pickle3')
+# key_list = []
 #
 # for voivodeship in range(len(loaded_dicts)):
 #     for key, value in loaded_dicts[voivodeship].items():
 #         values_list.append(value)
+#         key_list.append(key)
+#
+# export_list(key_list, '409_indices.pickle')
+# export_list(values_list, '409_values.pickle')
 
-values_list = import_list('values_409_list.pickle')
-levenshtein_matrix = np.zeros((len(values_list), len(values_list)))
+# print(values_list)
+# print('00000000000000000000000000000000000000')
+# print(key_list)
 
-for num, element in enumerate(values_list):
-    for num_2, _element in enumerate(values_list):
-        levenshtein_matrix[num][num_2] = Levenshtein.distance(element, _element)
-
-df = pd.DataFrame(levenshtein_matrix, columns=values_list, index=values_list)
+#
+# levenshtein_matrix = np.zeros((len(values_list), len(values_list)))
+#
+# for num, element in enumerate(values_list):
+#     for num_2, _element in enumerate(values_list):
+#         levenshtein_matrix[num][num_2] = Levenshtein.distance(element, _element)
+#
+# df = pd.DataFrame(levenshtein_matrix, columns=values_list, index=values_list)
 
 # df.to_pickle('levenshtein_matrix.pickle')
 

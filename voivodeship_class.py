@@ -25,7 +25,7 @@ class Voivodeship:
         self.merged_dicts = {}
         self.voivodeship_options = import_list(file_name='voivodeship_options')
         self.levenshtein_matrix = import_df(file_name='levenshtein_matrix.pickle')
-        self.loaded_dicts = import_list('dicts.pickle2')
+        self.loaded_dicts = import_list('dicts.pickle3')
 
     def get_random_question(self):
 
@@ -51,8 +51,13 @@ class Voivodeship:
 
         if self.level == 'Hard':
             col = self.levenshtein_matrix[correct_answer]
-            col = col.to_frame().sort_values(by=correct_answer)
-            iterator = 0
+            if isinstance(col, pd.Series):
+                col = col.to_frame()
+                col = col.sort_values(correct_answer)
+                print(col)
+            else:
+                col = col.sort_values(correct_answer)
+            iterator = 1
 
         while len(answers) < 4:
             # wybieramy losową wartość ze słownika, ale tylko jeśli nie jest już na liście

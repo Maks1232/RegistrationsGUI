@@ -1,0 +1,409 @@
+Augustów
+Bielsk Podlaski
+Grajewo
+Hajnówka
+Bia³ystok(miasto)
+Bia³ystok(powiat)
+Kolno
+£om¿a(miasto)
+£om¿a(powiat)
+Moñki
+Suwa³ki(miasto)
+Sejny
+Siemiatycze
+Sokó³ka
+Suwa³ki(powiat)
+Wysokie Mazowieckie
+Zambrów
+Aleksandrów Kujawski
+Bydgoszcz(miasto)
+Brodnica
+Bydgoszcz(powiat)
+Che³mno
+Grudzi¹dz
+Grudzi¹dz(powiat)
+Golub Dobrzyñ
+Inowroc³aw
+Lipno
+Mogilno
+Nak³o nad Noteci¹
+Radziejów
+Rypin
+Œwiecie
+Sêpólno Krajeñskie
+Toruñ(miasto)
+Toruñ(powiat)
+Tuchola
+W¹brzeŸno
+W³oc³awek(miasto)
+W³oc³awek(powiat)
+¯nin
+Wa³brzych(miasto)
+Wa³brzych(powiat)
+Boles³awiec
+Dzier¿oniów
+G³ogów
+Góra
+Jelenia Góra(miasto)
+Jawor
+Jelenia Góra(powiat)
+Kamienna Góra
+K³odzko
+Legnica(miasto)
+Lubañ
+Legnica(powiat)
+Lubin
+Lwówek Œl¹ski
+Milicz
+O³awa
+Oleœnica
+Polkowice
+Œroda Œl¹ska
+Strzelin
+Œwidnica
+Trzebnica
+Wroc³aw(miasto)
+Wo³ów
+Wroc³aw(powiat)
+Z¹bkowice Œlaskie
+Zgorzelec
+Z³otoryja
+Wroc³aw(miasto 2)
+Be³chatów
+Brzeziny
+Kutno
+£ódŸ(miasto)
+£ask
+£owicz
+£êczyca
+£ódŸ Wschód
+Opoczno
+Piotrków Trybunalski(miasto)
+Pabianice
+Poddêbice
+Piotrków Trybunalski(powiat)
+Pajêczno
+Radomsko
+Rawa Mazowiecka
+Skierniewice(miasto)
+Sieradz
+Skierniewice(powiat)
+Tomaszów Mazowiecki
+Wieruszów
+Wieluñ
+Zduñska Wola
+Zgierz
+£ódŸ(miasto 2)
+Gorzów Wielkopolski(miasto)
+Gorzów Wielkopolski(powiat)
+Krosno Odrzañskie
+Miêdzyrzecz
+Nowa Sól
+Strzelce Krajeñskie
+S³ubice
+Sulêcin
+Œwiebodzin
+Wschowa
+Zielona Góra(miasto)
+¯ary
+¯agañ
+Zielona Góra(powiat)
+Gdynia
+Bytów
+Chojnice
+Cz³uchów
+Gdañsk(miasto)
+Gdañsk(powiat Pruszcz Gdañski)
+Kartuzy
+Koœcierzyna
+Kwidzyn
+Lêbork
+Malbork
+Nowy Dwór Gdañski
+Puck
+S³upsk(miasto)
+S³upsk(powiat)
+Sopot
+Starogard Gdañski
+Sztum
+Tczew
+Wejherowo
+Wejherowo(powiat)
+Bochnia(powiat)
+Bochnia(powiat 2)
+Brzesko
+Chrzanów
+D¹browa Tarnowska
+Gorlice
+Limanowa
+Miechów
+Myœlenice
+Nowy S¹cz(miasto)
+Nowy S¹cz(powiat)
+Nowy Targ
+Olkusz
+Oœwiêcim
+Proszowice
+Kraków(miasto)
+Kraków(powiat)
+Kraków(miasto 2)
+Sucha Beskidzka
+Tarnów(miasto)
+Tarnów(powiat)
+Zakopane
+Wadowice
+Wieliczka
+Bia³a Podlaska(miasto)
+Bia³a Podlaska(powiat)
+Bi³goraj
+Che³m(miasto)
+Che³m(powiat)
+Hrubieszów
+Janów Lubelski
+Kraœnik
+Krasnystaw
+Lubartów
+£êczna
+£uków
+Opole Lubelskie
+Parczew
+Pu³awy
+Radzyñ Podlaski
+Ryki
+Œwidnik
+Tomaszów Lubelski
+Lublin(miasto)
+Lublin(powiat)
+W³odawa
+Zamoœæ(miasto)
+Zamoœæ(powiat)
+Bartoszyce
+Braniewo
+Dzia³dowo
+Elbl¹g(miasto)
+Elbl¹g(powiat)
+E³k
+Gi¿ycko
+Go³dap
+I³awa
+Kêtrzyn
+Lidzbark Warmiñski
+Mr¹gowo
+Nidzica
+Nowe Miasto Lubawskie
+Olsztyn(miasto)
+Olecko(od 2002r.)
+Olecko(do 2002r.)
+Olsztyn(powiat)
+Ostróda
+Pisz
+Szczytno
+Wêgorzewo
+Brzeg
+G³ubczyce
+Kêdzierzyn-KoŸle
+Kluczbork
+Krapkowice
+Namys³ów
+Nysa
+Olesno
+Opole(miasto)
+Opole(powiat)
+Prudnik
+Strzelce Opolskie
+Chodzie¿
+Czarnków
+Gniezno
+Grodzisk Wielkopolski
+Gostyñ
+Jarocin
+Kalisz(miasto)
+Kalisz(powiat)
+Kêpno
+Ko³o
+Konin(powiat)
+Konin(miasto do 2002r.)
+Krotoszyn
+Koœcian
+Leszno(miasto)
+Leszno(powiat)
+Miêdzychód
+Konin(miasto od 2002r.)
+Nowy Tomyœl
+Poznañ(miasto)
+Oborniki
+Ostrów Wielkopolski
+Ostrzeszów
+Poznañ(powiat do 2002r.)
+Pi³a
+Pleszew
+Rawicz
+Œrem
+S³upca
+Œroda Wielkopolska
+Szamotu³y
+Turek
+W¹growiec
+Wolsztyn
+Wrzeœnia
+Poznañ(powiat od 2002r.)
+Z³otów
+Poznañ(miasto 2)
+Ustrzyki Dolne
+Brzozów
+Dêbica
+Jaros³aw
+Jas³o
+Krosno(miasto)
+Kolbuszowa
+Krosno(powiat)
+£añcut
+Le¿ajsk
+Lesko
+Lubaczów
+Mielec
+Nisko
+Przemyœl(miasto)
+Przemyœl(powiat)
+Przeworsk
+Ropczyce
+Sanok
+Strzy¿ów
+Stalowa Wola
+Tarnobrzeg(miasto)
+Tarnobrzeg(powiat)
+Rzeszów(miasto)
+Rzeszów(powiat)
+Bielsko-Bia³a(miasto)
+Bêdzin
+Bielsko-Bia³a(powiat)
+Bieruñsko-Lêdziñski
+Czêstochowa(miasto)
+Cieszyn
+Czêstochowa(powiat)
+D¹browa Górnicza
+Gliwice(miasto)
+Gliwice(powiat)
+Chorzów
+Siemianowice Œl¹skie
+Jaworzno
+Jastrzêbie Zdrój
+Katowice
+K³obuck
+Ruda Œl¹ska(od 2002r.)
+Lubliniec
+Mys³owice
+Miko³ów
+Myszków
+Sosnowiec
+Piekary Œl¹skie
+Pszczyna
+Rybnik(miasto)
+Rybnik(powiat)
+Racibórz
+Ruda Œl¹ska(do 2002r.)
+Tychy
+Tarnowskie Góry
+Tychy(powiat do 2002r.)
+Œwiêtoch³owice
+Wodzis³aw Œl¹ski
+Bytom
+Zabrze
+Zawiercie
+¯ory
+¯ywiec
+Busko Zdrój
+Jêdrzejów
+Kielce(miasto)
+Kazimierza Wielka
+Kielce(powiat)
+Koñskie
+W³oszczowa
+Opatów
+Ostrowiec Œwiêtokrzyski
+Piñczów
+Sandomierz
+Skar¿ysko-Kamienna
+Starachowice
+Staszów
+Warszawa Bia³o³êka
+Warszawa Bemowo
+Bia³obrzegi
+Ciechanów
+Warszawa Bielany
+Warszawa Mokotów
+Warszawa Praga Po³udnie
+Garwolin
+Grodzisk Mazowiecki
+Grójec
+Gostynin
+Warszawa Praga Pó³noc
+Warszawa Œródmieœcie
+Warszawa Targówek
+Warszawa Ursus
+Kozienice
+Legionowo
+Lipsko
+£osice
+Miñsk Mazowiecki
+Maków Mazowiecki
+M³awa
+Warszawa Ursynów
+Nowy Dwór Mazowiecki
+Ostro³êka(miasto)
+Ostrów Mazowiecka
+Ostro³êka(powiat)
+Otwock
+P³ock(miasto)
+Piaseczno
+P³ock(powiat)
+P³oñsk
+Pruszków(powiat)
+Pruszków(miasto)
+Pruszków(powiat 2)
+Pu³tusk
+Przysucha
+Przasnysz
+Radom(miasto)
+Radom(powiat)
+Siedlce(miasto)
+Sochaczew
+Sierpc
+Soko³ów Podlaski
+Siedlce(powiat)
+Szyd³owiec
+Warszawa Wawer
+Warszawa Ochota
+Wo³omin(od 2003r.)
+Warszawa Rembertów, Wilanów, W³ochy
+Wêgrów
+Wo³omin
+Wyszków
+Warszawa Weso³a, ¯oliborz
+Warszawa Wola
+Warszawa Zachód
+¯uromin
+Zwoleñ
+¯yrardów
+Bia³ogard
+Choszczno
+Drawsko Pomorskie
+Goleniów
+Gryfino
+Gryfice
+Koszalin(miasto)
+Kamieñ Pomorski
+Ko³obrzeg
+Koszalin(powiat)
+£obez
+Myœlibórz
+Police
+Pyrzyce
+Szczecin(miasto)
+Szczecin(miasto 2)
+Œwidwin
+S³awno
+Stargard
+Œwinoujœcie
+Szczecinek
+Wa³cz

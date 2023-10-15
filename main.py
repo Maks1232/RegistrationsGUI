@@ -315,9 +315,9 @@ _matrix = np.zeros((len(values_list), len(values_list)))
 for num, element in enumerate(values_list):
     for num_2, _element in enumerate(values_list):
 
-        for i in range(1, 7):
+        for i in range(3):
             if element[:i] == _element[:i]:
-                _matrix[num][num_2] = i
+                _matrix[num][num_2] += i
 #
 df = pd.DataFrame(_matrix, columns=values_list, index=values_list)
 # df.to_csv('extreme.csv')

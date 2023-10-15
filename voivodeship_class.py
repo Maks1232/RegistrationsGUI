@@ -25,6 +25,7 @@ class Voivodeship:
         self.merged_dicts = {}
         self.voivodeship_options = import_list(file_name='voivodeship_options')
         self.levenshtein_matrix = import_df(file_name='levenshtein_matrix.pickle')
+        self.extreme_matrix = import_df(file_name='extreme_matrix.pickle')
         self.loaded_dicts = import_list('dicts.pickle3')
 
     def get_random_question(self):
@@ -49,24 +50,27 @@ class Voivodeship:
         # generujemy listę odpowiedzi, w tym poprawnej odpowiedzi
         answers = [correct_answer]
 
-        if self.level == 'Hard':
+        if self.level == "Hard":
             col = self.levenshtein_matrix[correct_answer]
-            if isinstance(col, pd.Series):
-                col = col.to_frame()
-                col = col.sort_values(correct_answer)
-                print(col)
-            else:
-                col = col.sort_values(correct_answer)
-            iterator = 1
+        elif self.level == "Extreme":
+            col = self.extreme_matrix[correct_answer]
+        else:
+            col = None
+
+        if isinstance(col, pd.Series):
+            col = col.to_frame()
+        if self.level == 'Hard':
+            col = col.sort_values(correct_answer)
+        if self.level == 'Extreme':
+            col = col.sort_values(correct_answer, ascending=False)
+
+        iterator = 1
 
         while len(answers) < 4:
             # wybieramy losową wartość ze słownika, ale tylko jeśli nie jest już na liście
             if self.voivodeship == self.voivodeship_options[-1] and (self.level == "Medium" or self.level == 'Easy'):
                 random_answer = random.choice(list(self.merged_dicts.values()))
-            elif self.level == "Hard":
-                random_answer = col.index[iterator]
-                iterator += 1
-            elif self.level == "Unicum":
+            elif self.level == "Hard" or self.level == 'Extreme':
                 random_answer = col.index[iterator]
                 iterator += 1
             else:

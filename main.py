@@ -73,7 +73,7 @@ first_answer = pygame.Rect(WIDTH*0.1, 0.4*HEIGHT-0.08*HEIGHT, HEIGHT*0.5, 0.1*HE
 
 # Opcje pola rozwijanego
 voivodeship_options = import_list(file_name='voivodeship_options')
-level_options = ["Easy", "Medium", "Hard"]
+level_options = ["Easy", "Medium", "Hard", "Extreme"]
 
 
 def draw_element(color, element, position):
@@ -231,68 +231,6 @@ while run:
     draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)
 
     pygame.display.flip()
-
-
-
-# zamienione_1 = False
-# zamienione_2 = False
-# zamienione_3 = False
-# zamienione_4 = False
-# zamienione_5 = False
-# zamienione_6 = False
-# zamienione_7 = False
-# zamienione_8 = False
-#
-#
-# do_zamiany_1 = "Suwałki"
-# po_zmianie_1 = "Suwałki(X)"
-#
-# do_zamiany_2 = "Skierniewice"
-# po_zmianie_2 = "Skierniewice(X)"
-#
-# do_zamiany_3 = "WejherowoX"
-# po_zmianie_3 = "Wejherowo(powiat)"
-#
-# do_zamiany_4 = "Suwałki(powiat)"
-# po_zmianie_4 = "Suwałki(miasto)"
-#
-# do_zamiany_5 = "Wrocław(miasto)"
-# po_zmianie_5 = "Wrocław(miasto 2)"
-#
-# do_zamiany_6 = "Poznań(miasto)"
-# po_zmianie_6 = "Poznań(miasto 2)"
-#
-# do_zamiany_7 = "Łódź(miasto)"
-# po_zmianie_7 = "Łódź(miasto 2)"
-#
-# do_zamiany_8 = "Skierniewice(powiat)"
-# po_zmianie_8 = "Skierniewice(miasto)"
-#
-# for i, value in enumerate(values_list):
-#     if value == do_zamiany_1 and not zamienione_1:
-#         values_list[i] = po_zmianie_1
-#         zamienione_1 = True
-#     if value == do_zamiany_2 and not zamienione_2:
-#         values_list[i] = po_zmianie_2
-#         zamienione_2 = True
-#     if value == do_zamiany_3 and not zamienione_3:
-#         values_list[i] = po_zmianie_3
-#         zamienione_3 = True
-#     if value == do_zamiany_4 and not zamienione_4:
-#         values_list[i] = po_zmianie_4
-#         zamienione_4 = True
-#     if value == do_zamiany_5 and not zamienione_5:
-#         values_list[i] = po_zmianie_5
-#         zamienione_5 = True
-#     if value == do_zamiany_6 and not zamienione_6:
-#         values_list[i] = po_zmianie_6
-#         zamienione_6 = True
-#     if value == do_zamiany_7 and not zamienione_7:
-#         values_list[i] = po_zmianie_7
-#         zamienione_7 = True
-#     if value == do_zamiany_8 and not zamienione_8:
-#         values_list[i] = po_zmianie_8
-#         zamienione_8 = True
 #
 # export_list(values_list, 'values_409_list.pickle')
 
@@ -355,20 +293,39 @@ while run:
 # export_list(yyy, 'testy.pickle')
 
 
-# loaded_dicts = import_list('dicts.pickle3')
-# key_list = []
-#
-# for voivodeship in range(len(loaded_dicts)):
-#     for key, value in loaded_dicts[voivodeship].items():
-#         values_list.append(value)
-#         key_list.append(key)
-#
-# export_list(key_list, '409_indices.pickle')
-# export_list(values_list, '409_values.pickle')
+loaded_dicts = import_list('dicts.pickle3')
+key_list = []
+
+for voivodeship in range(len(loaded_dicts)):
+    for key, value in loaded_dicts[voivodeship].items():
+        values_list.append(value)
+        key_list.append(key)
+
+export_list(key_list, '409_indices.pickle')
+export_list(values_list, '409_values.pickle')
 
 # print(values_list)
 # print('00000000000000000000000000000000000000')
 # print(key_list)
+
+_matrix = np.zeros((len(values_list), len(values_list)))
+
+# import_list('409_values.pickle')
+
+for num, element in enumerate(values_list):
+    for num_2, _element in enumerate(values_list):
+
+        for i in range(1, 7):
+            if element[:i] == _element[:i]:
+                _matrix[num][num_2] = i
+#
+df = pd.DataFrame(_matrix, columns=values_list, index=values_list)
+# df.to_csv('extreme.csv')
+df.to_pickle('extreme_matrix.pickle')
+
+
+
+
 
 #
 # levenshtein_matrix = np.zeros((len(values_list), len(values_list)))

@@ -6,13 +6,15 @@ import pickle
 import numpy as np
 import Levenshtein
 from voivodeship_class import Voivodeship
+import tkinter as tk
+from tkinter import messagebox
 
 pygame.font.init()
 pygame.mixer.init()
 
 # Window creation
-# WIDTH, HEIGHT = (1920, 1080)
-WIDTH, HEIGHT = (1800, 900)
+WIDTH, HEIGHT = (1920, 1080)
+# WIDTH, HEIGHT = (1800, 900)
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Registration Plates Quiz")
 
@@ -106,20 +108,38 @@ def draw_list(position, options, active_list, active_choice):
             write_text(option, (position[0] + position.width // 2, y + position.height // 2))
 
 
+def show_message(title, message):
+    root = tk.Tk()
+    root.withdraw()  # Ukryj główne okno aplikacji
+    messagebox.showinfo(title, message)
+
+
+def exit_execute(_run, stage=0):
+    if stage == 0:
+        _result = messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść z aplikacji?")
+    else:
+        _result = messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść do menu?")
+
+    if _result == "yes":
+        _run = False
+
+    return _run
+
+
 def game(_play, _score):
 
-    entity = Voivodeship(voivodeship=active_option, level=active_level_option)
+    entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=1)
     registration, county, answers = entity.ask_question()
 
-    score_surface = font_2.render("Score: " + str(_score), True, black)
-    registration_surface = font_2.render(registration, True, black)
-
-    registration_position = (0.5 * WIDTH - 0.5 * registration_surface.get_width()
-                             + 0.27 * registration_surface.get_width(),
-                             0.04 * HEIGHT + 0.5 * registration_template.get_height() -
-                             0.42 * registration_surface.get_height())
-
     while _play:
+
+        score_surface = font_2.render("Score: " + str(_score), True, black)
+        registration_surface = font_2.render(registration, True, black)
+
+        registration_position = (0.5 * WIDTH - 0.5 * registration_surface.get_width()
+                                 + 0.27 * registration_surface.get_width(),
+                                 0.04 * HEIGHT + 0.5 * registration_template.get_height() -
+                                 0.42 * registration_surface.get_height())
 
         draw_element((175, 238, 238), registration_template, registration_template_position)
         score_position = (WIDTH - 2 * score_surface.get_width(), registration_position.__getitem__(1))
@@ -129,13 +149,13 @@ def game(_play, _score):
         for _event in pygame.event.get():
 
             if _event.type == pygame.QUIT:
-                _play = False
+                _play = exit_execute(_play, stage=1)
             elif _event.type == pygame.KEYDOWN:
                 if _event.key == pygame.K_ESCAPE:
-                    _play = False
+                    _play = exit_execute(_play, stage=1)
             elif _event.type == pygame.MOUSEBUTTONDOWN:
                 if exit_button.collidepoint(_event.pos):
-                    _play = False
+                    _play = exit_execute(_play, stage=1)
                 for i in range(2):
                     for j in range(2):
                         if i == 1:
@@ -150,13 +170,16 @@ def game(_play, _score):
                         if _square_option.collidepoint(_event.pos):
                             if answers[2 * i + j] == county:
                                 _score += 1
-                                _play = not _play
-                                game(True, _score)
+                                try:
+                                    registration, county, answers = entity.ask_question()
+                                except Exception:
+                                    _play = False
                             else:
                                 _score = 0
-                                _play = not _play
-                                game(True, _score)
-
+                                try:
+                                    registration, county, answers = entity.ask_question()
+                                except Exception:
+                                    _play = False
         for i in range(2):
             for j in range(2):
                 if i == 1:
@@ -177,24 +200,20 @@ run = True
 while run:
 
     clock.tick(60)
-    # draw_element(background_color, car_plates_map,
-    #   (WIDTH/2-car_plates_map.get_width()/2, HEIGHT/2-car_plates_map.get_height()/2))
     draw_element(white, app_logo, (0.5 * WIDTH - 0.5 * app_logo.get_width(), 0.02 * HEIGHT))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            # response = pygame.messagebox.askyesno("Potwierdzenie zamknięcia", "Czy na pewno chcesz zamknąć program?")
-            # if response:
-            run = False
+            run = exit_execute(run)
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                run = False
+                run = exit_execute(run)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if drop_down.collidepoint(event.pos):
                 full_list = not full_list
                 full_level_list = False
             elif exit_button.collidepoint(event.pos):
-                run = False
+                run = exit_execute(run)
             elif level_drop_down.collidepoint(event.pos):
                 full_level_list = not full_level_list
                 full_list = False

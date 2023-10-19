@@ -2,7 +2,8 @@ import csv
 import random
 import colorama as colorama
 import pickle
-
+import tkinter as tk
+from tkinter import messagebox
 import numpy as np
 import pandas as pd
 
@@ -18,31 +19,102 @@ def import_df(file_name):
     return df
 
 
+def show_message(title, message):
+    root = tk.Tk()
+    root.withdraw()  # Ukryj główne okno aplikacji
+    messagebox.showinfo(title, message)
+
+
 class Voivodeship:
-    def __init__(self, voivodeship, level):
+    def __init__(self, voivodeship, level, mode=1):
         self.voivodeship = voivodeship
         self.level = level
+        self.mode = mode
         self.merged_dicts = {}
         self.voivodeship_options = import_list(file_name='voivodeship_options')
         self.levenshtein_matrix = import_df(file_name='levenshtein_matrix.pickle')
         self.extreme_matrix = import_df(file_name='extreme_matrix.pickle')
         self.loaded_dicts = import_list('dicts.pickle3')
+        self.already_selected = {}
+
+    def random_plate(self):
+
+        if self.voivodeship == self.voivodeship_options[-1]:
+            if self.mode == 1:
+                id, county = random.choice(list(self.merged_dicts.items() - self.already_selected.items()))
+            else:
+                id, county = random.choice(list(self.merged_dicts.items()))
+        elif self.level == "Hard":
+            if self.mode == 1:
+                id, county = random.choice(
+                    list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items() -
+                         self.already_selected.items()))
+            else:
+                id, county = random.choice(list(
+                    self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items()))
+        else:
+            if self.mode == 1:
+                id, county = random.choice(list(self.loaded_dicts[self.voivodeship_options.index(
+                    self.voivodeship)].items() - self.already_selected.items()))
+            else:
+                id, county = random.choice(list(self.loaded_dicts[self.voivodeship_options.index(
+                    self.voivodeship)].items()))
+
+        return id, county
+
+    def dictionary_merge(self):
+        for _dict in self.loaded_dicts:
+            self.merged_dicts.update(_dict)
+
+    # def get_random_question(self):
+    #
+    #     # wybierzlosowy klucz i wartość (mapowanie z przekazywanej zmiennej tekstowej na indeks listy w słowniku)
+    #     if self.voivodeship == self.voivodeship_options[-1]:
+    #         for _dict in self.loaded_dicts:
+    #             self.merged_dicts.update(_dict)
+    #         if self.mode == 1:
+    #             id, county = self.random_plate()
+    #         else:
+    #             id, county = self.random_plate()
+    #     elif self.level == "Hard":
+    #         for _dict in self.loaded_dicts:
+    #             self.merged_dicts.update(_dict)
+    #         if self.mode == 1:
+    #             id, county = self.random_plate()
+    #         else:
+    #             id, county = self.random_plate()
+    #     else:
+    #         if self.mode == 1:
+    #             id, county = self.random_plate()
+    #         else:
+    #             id, county = self.random_plate()
+    #     if self.mode == 1:
+    #         self.already_selected[id] = county
+    #     # if self.mode == 1 and
+    #     return id, county
 
     def get_random_question(self):
 
-        # wybierzlosowy klucz i wartość (mapowanie z przekazywanej zmiennej tekstowej na indeks listy w słowniku)
+        # wybierz losowy klucz i wartość (mapowanie z przekazywanej zmiennej tekstowej na indeks listy w słowniku)
         if self.voivodeship == self.voivodeship_options[-1]:
-            for _dict in self.loaded_dicts:
-                self.merged_dicts.update(_dict)
-            id, county = random.choice(list(self.merged_dicts.items()))
+            self.dictionary_merge()
+            id, county = self.random_plate()
         elif self.level == "Hard":
-            for _dict in self.loaded_dicts:
-                self.merged_dicts.update(_dict)
-            id, county = random.choice(
-                list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items()))
+            self.dictionary_merge()
+            id, county = self.random_plate()
         else:
-            id, county = random.choice(list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items()))
+            id, county = self.random_plate()
 
+        if self.mode == 1:
+            self.already_selected[id] = county
+        if self.mode == 1 and len(self.merged_dicts.items()) - len(self.already_selected.items()) == 0:
+            show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
+            raise Exception()
+        elif self.mode == 1 and not self.voivodeship == self.voivodeship_options[-1]:
+            if len(self.loaded_dicts[self.voivodeship_options.index(
+                    self.voivodeship)].items()) - len(self.already_selected.items()) == 0:
+                show_message("Brawo!", "To już wszystkie tablice z tego województwa!")
+                raise Exception()
         return id, county
 
     def generate_answers(self, correct_answer):

@@ -13,8 +13,8 @@ pygame.font.init()
 pygame.mixer.init()
 
 # Window creation
-WIDTH, HEIGHT = (1920, 1080)
-# WIDTH, HEIGHT = (1800, 900)
+# WIDTH, HEIGHT = (1920, 1080)
+WIDTH, HEIGHT = (1800, 900)
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Registration Plates Quiz")
 
@@ -38,6 +38,7 @@ full_list = False
 full_level_list = False
 active_option = "Choose voivodeship"
 active_level_option = "Choose level"
+mode = 1
 values_list = []
 score = 0
 
@@ -74,6 +75,7 @@ registration_template_position = (0.5*WIDTH-0.5*registration_template.get_width(
 first_answer = pygame.Rect(WIDTH*0.1, 0.4*HEIGHT-0.08*HEIGHT, HEIGHT*0.5, 0.1*HEIGHT)
 
 # Opcje pola rozwijanego
+loaded_dicts = import_list('dicts.pickle3')
 voivodeship_options = import_list(file_name='voivodeship_options')
 level_options = ["Easy", "Medium", "Hard", "Extreme"]
 
@@ -109,8 +111,6 @@ def draw_list(position, options, active_list, active_choice):
 
 
 def show_message(title, message):
-    root = tk.Tk()
-    root.withdraw()  # Ukryj główne okno aplikacji
     messagebox.showinfo(title, message)
 
 
@@ -126,14 +126,41 @@ def exit_execute(_run, stage=0):
     return _run
 
 
+def multiplicator(voivodeship, level, voivodeship_base, level_base):
+
+    a = 1
+    b = 0
+
+    if voivodeship == voivodeship_base[-1] and level == level_base[-1]:
+        a = 2
+        b = 3
+    elif voivodeship == voivodeship_base[-1] and level == level_base[-2]:
+        a = 2
+        b = 2
+    elif not voivodeship == voivodeship_base[-1] and level == level_base[-1]:
+        a = 1
+        b = 2
+    elif voivodeship == voivodeship_base[-1] and level == level_base[0] or not voivodeship == voivodeship_base[-1] and level == level_base[-2]:
+        b = 1
+
+    return a + b
+
+
 def game(_play, _score):
 
-    entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=1)
+    score_multiplicator = multiplicator(active_option, active_level_option, voivodeship_options, level_options)
+    if not active_option == 'Wszystkie':
+        plates_left = len(loaded_dicts[voivodeship_options.index(active_option)])
+    else:
+        plates_left = 409
+
+    entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=mode)
     registration, county, answers = entity.ask_question()
 
     while _play:
 
         score_surface = font_2.render("Score: " + str(_score), True, black)
+        left_surface = font_2.render("Plates left: " + str(plates_left), True, black)
         registration_surface = font_2.render(registration, True, black)
 
         registration_position = (0.5 * WIDTH - 0.5 * registration_surface.get_width()
@@ -143,8 +170,11 @@ def game(_play, _score):
 
         draw_element((175, 238, 238), registration_template, registration_template_position)
         score_position = (WIDTH - 2 * score_surface.get_width(), registration_position.__getitem__(1))
+        left_position = (score_surface.get_width(), registration_position.__getitem__(1))
+
         WIN.blit(registration_surface, registration_position)
         WIN.blit(score_surface, score_position)
+        WIN.blit(left_surface, left_position)
 
         for _event in pygame.event.get():
 
@@ -169,16 +199,21 @@ def game(_play, _score):
 
                         if _square_option.collidepoint(_event.pos):
                             if answers[2 * i + j] == county:
-                                _score += 1
+                                _score += score_multiplicator
+                                plates_left -= 1
                                 try:
                                     registration, county, answers = entity.ask_question()
                                 except Exception:
+                                    show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
                                     _play = False
                             else:
-                                _score = 0
+                                plates_left -= 1
+                                if mode == 0:
+                                    _score = 0
                                 try:
                                     registration, county, answers = entity.ask_question()
                                 except Exception:
+                                    show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
                                     _play = False
         for i in range(2):
             for j in range(2):

@@ -280,6 +280,7 @@ while run:
         draw_rect(play_button, "Play!", green)
     else:
         draw_rect(play_button, "Play!", grey)
+
     draw_rect(exit_button, "Exit", grey)
     draw_list(drop_down, voivodeship_options, active_list=full_list, active_choice=active_option)
     draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)

@@ -77,17 +77,16 @@ class Voivodeship:
 
         if self.level == "Hard":
             col = self.levenshtein_matrix[correct_answer]
+            if isinstance(col, pd.Series):
+                col = col.to_frame()
+            col = col.sort_values(correct_answer)
         elif self.level == "Extreme":
             col = self.extreme_matrix[correct_answer]
+            if isinstance(col, pd.Series):
+                col = col.to_frame()
+            col = col.sort_values(correct_answer, ascending=False)
         else:
             col = None
-
-        if isinstance(col, pd.Series):
-            col = col.to_frame()
-        if self.level == 'Hard':
-            col = col.sort_values(correct_answer)
-        if self.level == 'Extreme':
-            col = col.sort_values(correct_answer, ascending=False)
 
         iterator = 1
 

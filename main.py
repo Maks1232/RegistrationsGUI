@@ -50,9 +50,9 @@ car_plates_map = pygame.transform.scale(car_plates_map, (0.9*WIDTH, 0.9*HEIGHT))
 
 
 # Export list to the file
-def export_list(voivodeship_options, file_name):
+def export_list(voivodeships, file_name):
     with open(file_name, 'wb') as file:
-        pickle.dump(voivodeship_options, file)
+        pickle.dump(voivodeships, file)
 
 
 # Import list from the file
@@ -126,7 +126,7 @@ def exit_execute(_run, stage=0):
     return _run
 
 
-def multiplicator(voivodeship, level, voivodeship_base, level_base):
+def multiplier(voivodeship, level, voivodeship_base, level_base):
 
     a = 1
     b = 0
@@ -140,7 +140,8 @@ def multiplicator(voivodeship, level, voivodeship_base, level_base):
     elif not voivodeship == voivodeship_base[-1] and level == level_base[-1]:
         a = 1
         b = 2
-    elif voivodeship == voivodeship_base[-1] and level == level_base[0] or not voivodeship == voivodeship_base[-1] and level == level_base[-2]:
+    elif (voivodeship == voivodeship_base[-1] and level == level_base[0] or
+          not voivodeship == voivodeship_base[-1] and level == level_base[-2]):
         b = 1
 
     return a + b
@@ -148,7 +149,8 @@ def multiplicator(voivodeship, level, voivodeship_base, level_base):
 
 def game(_play, _score):
 
-    score_multiplicator = multiplicator(active_option, active_level_option, voivodeship_options, level_options)
+    score_multiplicator = multiplier(active_option, active_level_option, voivodeship_options, level_options)
+
     if not active_option == 'Wszystkie':
         plates_left = len(loaded_dicts[voivodeship_options.index(active_option)])
     else:

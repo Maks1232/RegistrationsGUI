@@ -149,7 +149,7 @@ def multiplier(voivodeship, level, voivodeship_base, level_base):
 
 def game(_play, _score):
 
-    score_multiplicator = multiplier(active_option, active_level_option, voivodeship_options, level_options)
+    score_multiplier = multiplier(active_option, active_level_option, voivodeship_options, level_options)
 
     if not active_option == 'Wszystkie':
         plates_left = len(loaded_dicts[voivodeship_options.index(active_option)])
@@ -201,7 +201,7 @@ def game(_play, _score):
 
                         if _square_option.collidepoint(_event.pos):
                             if answers[2 * i + j] == county:
-                                _score += score_multiplicator
+                                _score += score_multiplier
                                 plates_left -= 1
                                 try:
                                     registration, county, answers = entity.ask_question()

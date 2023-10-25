@@ -8,13 +8,14 @@ import Levenshtein
 from voivodeship_class import Voivodeship
 import tkinter as tk
 from tkinter import messagebox
+from itertools import islice
 
 pygame.font.init()
 pygame.mixer.init()
 
 # Window creation
-# WIDTH, HEIGHT = (1920, 1080)
-WIDTH, HEIGHT = (1800, 900)
+WIDTH, HEIGHT = (1920, 1080)
+# WIDTH, HEIGHT = (1800, 900)
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Registration Plates Quiz")
 
@@ -26,6 +27,7 @@ grey = (150, 150, 150)
 dark_grey = (100, 100, 100)
 green = (60, 179, 113)
 black = (0, 0, 0)
+dark_blue = (66, 0, 249)
 
 # Font
 font = pygame.font.Font(None, 32)
@@ -39,8 +41,9 @@ full_level_list = False
 active_option = "Choose voivodeship"
 active_level_option = "Choose level"
 mode = 1
-values_list = []
 score = 0
+
+# values_list = []
 
 # Loading images
 app_logo = pygame.image.load(os.path.join('Images', 'title_v1.png'))
@@ -63,8 +66,8 @@ def import_list(file_name):
 
 
 # Pozycje pól rozwijanych
-drop_down = pygame.Rect(WIDTH - (WIDTH * 0.9), 20 + app_logo.get_height(), WIDTH * 0.25, 0.04 * HEIGHT)
-level_drop_down = pygame.Rect(WIDTH - (WIDTH * 0.10 + WIDTH * 0.25), 20 + app_logo.get_height(), WIDTH * 0.25,
+drop_down = pygame.Rect(WIDTH - (WIDTH * 0.9), 20 + 1.1*app_logo.get_height(), WIDTH * 0.25, 0.04 * HEIGHT)
+level_drop_down = pygame.Rect(WIDTH - (WIDTH * 0.10 + WIDTH * 0.25), 20 + 1.1*app_logo.get_height(), WIDTH * 0.25,
                               0.04 * HEIGHT)
 
 play_button = pygame.Rect(WIDTH*0.65, 0.9*HEIGHT-0.08*HEIGHT, HEIGHT*0.25, 0.04*HEIGHT)
@@ -80,16 +83,16 @@ voivodeship_options = import_list(file_name='voivodeship_options')
 level_options = ["Easy", "Medium", "Hard", "Extreme"]
 
 
-def draw_element(color, element, position):
+def draw_element_with_background(color, element, position):
     WIN.fill(color)
     WIN.blit(element, position)
 
 
 def draw_rect(position, text, button_color):
-    pygame.draw.rect(WIN, button_color, position)
-    pygame.draw.rect(WIN, white, position, 2)
+    pygame.draw.rect(WIN, button_color, position)  # draw rectangular
+    pygame.draw.rect(WIN, white, position, 2)  # draw the frame
     write_text(text,
-               (position[0] + position[2] // 2, position[1] + position[3]// 2))
+               (position[0] + position[2] // 2, position[1] + position[3] // 2))
 
 
 def write_text(text, location):
@@ -99,7 +102,7 @@ def write_text(text, location):
 
 
 def draw_list(position, options, active_list, active_choice):
-    draw_rect(position, active_choice, grey)
+    draw_rect(position, active_choice, green)
 
     if active_list:
 
@@ -147,17 +150,71 @@ def multiplier(voivodeship, level, voivodeship_base, level_base):
     return a + b
 
 
+def load_df(name):
+    df = pd.read_excel(name)
+    return df
+
+
+def save_score(nick, level, voivodeship, points):
+
+    # df = pd.DataFrame(columns=["Nick", "Level", "Voivodeship", "Points"])
+    # df.to_excel("test.xlsx")
+
+    df = load_df("test.xlsx")
+
+    updater = pd.DataFrame(columns=["Nick", "Level", "Voivodeship", "Points"])
+    updater.at[0, 'Nick'] = nick
+    updater.at[0, 'Level'] = level
+    updater.at[0, 'Voivodeship'] = voivodeship
+    updater.at[0, 'Points'] = points
+
+    df = pd.concat([updater, df], ignore_index=True)
+
+    df.to_excel("test.xlsx", columns=["Nick", "Level", "Voivodeship", "Points"])
+
+
+# Funkcja do renderowania DataFrame
+def render_dataframe(df):
+
+    x, y = WIDTH/10, HEIGHT/2.8
+    cell_width, cell_height = WIDTH/5, HEIGHT/30
+
+    text = font_2.render("Ranking ostatnich rozgrywek:", True, dark_blue)
+    WIN.blit(text, (20, HEIGHT/3.5))
+
+    for col in df.columns[1:]:
+        text = font_2.render(col, True, black)
+        WIN.blit(text, (x - WIDTH/300, y))
+        x += cell_width
+
+    y += 2*cell_height
+
+    for _, row in islice(df.iterrows(), 10):
+        x = 20
+        for value in row:
+            if isinstance(value, int) and value is not row.iloc[-1]:
+                text = font.render(str(value + 1), True, black)
+            else:
+                text = font.render(str(value), True, black)
+            if x == 20:
+                WIN.blit(text, (x, y))
+            else:
+                WIN.blit(text, (x - WIDTH/9, y))
+            x += cell_width
+        y += cell_height
+
+
 def game(_play, _score):
 
     score_multiplier = multiplier(active_option, active_level_option, voivodeship_options, level_options)
+
+    entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=mode)
+    registration, county, answers = entity.ask_question()
 
     if not active_option == 'Wszystkie':
         plates_left = len(loaded_dicts[voivodeship_options.index(active_option)])
     else:
         plates_left = 409
-
-    entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=mode)
-    registration, county, answers = entity.ask_question()
 
     while _play:
 
@@ -170,7 +227,7 @@ def game(_play, _score):
                                  0.04 * HEIGHT + 0.5 * registration_template.get_height() -
                                  0.42 * registration_surface.get_height())
 
-        draw_element((175, 238, 238), registration_template, registration_template_position)
+        draw_element_with_background((175, 238, 238), registration_template, registration_template_position)
         score_position = (WIDTH - 2 * score_surface.get_width(), registration_position.__getitem__(1))
         left_position = (score_surface.get_width(), registration_position.__getitem__(1))
 
@@ -207,6 +264,7 @@ def game(_play, _score):
                                     registration, county, answers = entity.ask_question()
                                 except Exception:
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
+                                    save_score("maks", active_level_option, active_option, _score)
                                     _play = False
                             else:
                                 plates_left -= 1
@@ -216,6 +274,7 @@ def game(_play, _score):
                                     registration, county, answers = entity.ask_question()
                                 except Exception:
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
+                                    save_score("maks", active_level_option, active_option, _score)
                                     _play = False
         for i in range(2):
             for j in range(2):
@@ -237,7 +296,9 @@ run = True
 while run:
 
     clock.tick(60)
-    draw_element(white, app_logo, (0.5 * WIDTH - 0.5 * app_logo.get_width(), 0.02 * HEIGHT))
+    draw_element_with_background(white, app_logo, (0.5 * WIDTH - 0.5 * app_logo.get_width(), 0.02 * HEIGHT))
+
+    render_dataframe(load_df("test.xlsx"))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -274,6 +335,7 @@ while run:
                     if square_option.collidepoint(event.pos):
                         active_level_option = option
                         full_level_list = False
+
             if play_button.collidepoint(event.pos):
                 if not active_option == "Choose voivodeship" and not active_level_option == "Choose level":
                     game(True, score)

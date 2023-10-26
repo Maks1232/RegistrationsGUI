@@ -1,3 +1,4 @@
+import sys
 import time
 import pandas as pd
 import pygame
@@ -9,15 +10,20 @@ from voivodeship_class import Voivodeship
 import tkinter as tk
 from tkinter import messagebox
 from itertools import islice
+import pygame_gui
+import pygame.freetype
 
+
+pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
 # Window creation
-WIDTH, HEIGHT = (1920, 1080)
-# WIDTH, HEIGHT = (1800, 900)
+# WIDTH, HEIGHT = (1920, 1080)
+WIDTH, HEIGHT = (1800, 900)
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Registration Plates Quiz")
+
 
 # Kolory
 white = (255, 255, 255)
@@ -32,7 +38,6 @@ dark_blue = (66, 0, 249)
 # Font
 font = pygame.font.Font(None, 32)
 font_2 = pygame.font.Font(None, 72)
-
 
 # Variables
 play = False
@@ -81,6 +86,12 @@ first_answer = pygame.Rect(WIDTH*0.1, 0.4*HEIGHT-0.08*HEIGHT, HEIGHT*0.5, 0.1*HE
 loaded_dicts = import_list('dicts.pickle3')
 voivodeship_options = import_list(file_name='voivodeship_options')
 level_options = ["Easy", "Medium", "Hard", "Extreme"]
+
+# Wprowadzanie nicku
+manager = pygame_gui.UIManager((1600, 900))
+frame = (WIDTH/2, HEIGHT/20)
+text_input = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((WIDTH/2 - frame[0]/2, HEIGHT/2 - frame[1]/2), frame), manager=manager,
+                                               object_id='#main_text_entry')
 
 
 def draw_element_with_background(color, element, position):
@@ -204,6 +215,30 @@ def render_dataframe(df):
         y += cell_height
 
 
+def get_user_name():
+
+    text = font_2.render("Wprowadź swoją nazwę użytkownika i wciśnij klawisz ENTER:", True, dark_blue)
+    _run = True
+
+    while _run:
+        UI_REFRESH_RATE = clock.tick(60) / 1000
+        for event in pygame.event.get():
+            if (event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and
+                    event.ui_object_id == '#main_text_entry'):
+                _run = False
+                return event.text
+
+            manager.process_events(event)
+
+        manager.update(UI_REFRESH_RATE)
+
+        WIN.fill("white")
+        WIN.blit(text, (WIDTH/2 - text.get_width()/2, text_input.get_starting_height() + 5*text.get_height()))
+
+        manager.draw_ui(WIN)
+        pygame.display.update()
+
+
 def game(_play, _score):
 
     score_multiplier = multiplier(active_option, active_level_option, voivodeship_options, level_options)
@@ -264,7 +299,7 @@ def game(_play, _score):
                                     registration, county, answers = entity.ask_question()
                                 except Exception:
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
-                                    save_score("maks", active_level_option, active_option, _score)
+                                    save_score(nickname, active_level_option, active_option, _score)
                                     _play = False
                             else:
                                 plates_left -= 1
@@ -274,7 +309,7 @@ def game(_play, _score):
                                     registration, county, answers = entity.ask_question()
                                 except Exception:
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
-                                    save_score("maks", active_level_option, active_option, _score)
+                                    save_score(nickname, active_level_option, active_option, _score)
                                     _play = False
         for i in range(2):
             for j in range(2):
@@ -293,6 +328,7 @@ def game(_play, _score):
 clock = pygame.time.Clock()
 run = True
 
+nickname = get_user_name()
 while run:
 
     clock.tick(60)
@@ -350,6 +386,8 @@ while run:
     draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)
 
     pygame.display.flip()
+
+# print("aaaaaa: " + nick)
 #
 # export_list(values_list, 'values_409_list.pickle')
 

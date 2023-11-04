@@ -12,18 +12,15 @@ from tkinter import messagebox
 from itertools import islice
 import pygame_gui
 import pygame.freetype
-
+from pygame.locals import *
 
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
 # Window creation
-# WIDTH, HEIGHT = (1920, 1080)
-WIDTH, HEIGHT = (1800, 900)
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIN = pygame.display.set_mode((1600, 800), pygame.RESIZABLE)
 pygame.display.set_caption("Registration Plates Quiz")
-
 
 # Kolory
 white = (255, 255, 255)
@@ -34,6 +31,7 @@ dark_grey = (100, 100, 100)
 green = (60, 179, 113)
 black = (0, 0, 0)
 dark_blue = (66, 0, 249)
+bright_blue = (175, 238, 238)
 
 # Font
 font = pygame.font.Font(None, 32)
@@ -43,18 +41,19 @@ font_2 = pygame.font.Font(None, 72)
 play = False
 full_list = False
 full_level_list = False
-active_option = "Choose voivodeship"
-active_level_option = "Choose level"
-mode = 1
+active_option = "Wybierz województwo"
+active_level_option = "Wybierz poziom"
+tribes = {0: 'Powtarzanie', 1: 'Bez powtórzeń'}
+mode = 0
 score = 0
+clock = pygame.time.Clock()
+UI_REFRESH_RATE = clock.tick(60) / 10000
+run = True
 
-# values_list = []
 
 # Loading images
 app_logo = pygame.image.load(os.path.join('Images', 'title_v1.png'))
 registration_template = pygame.image.load(os.path.join('Images', 'registration_template.png'))
-car_plates_map = pygame.image.load(os.path.join('Images', 'carplates.png'))
-car_plates_map = pygame.transform.scale(car_plates_map, (0.9*WIDTH, 0.9*HEIGHT))
 
 
 # Export list to the file
@@ -70,28 +69,43 @@ def import_list(file_name):
     return imported_list
 
 
-# Pozycje pól rozwijanych
-drop_down = pygame.Rect(WIDTH - (WIDTH * 0.9), 20 + 1.1*app_logo.get_height(), WIDTH * 0.25, 0.04 * HEIGHT)
-level_drop_down = pygame.Rect(WIDTH - (WIDTH * 0.10 + WIDTH * 0.25), 20 + 1.1*app_logo.get_height(), WIDTH * 0.25,
-                              0.04 * HEIGHT)
-
-play_button = pygame.Rect(WIDTH*0.65, 0.9*HEIGHT-0.08*HEIGHT, HEIGHT*0.25, 0.04*HEIGHT)
-exit_button = pygame.Rect(WIDTH*0.65, 0.9*HEIGHT-0.04*HEIGHT, HEIGHT*0.25, 0.04*HEIGHT)
-
-registration_template_position = (0.5*WIDTH-0.5*registration_template.get_width(), 0.04*HEIGHT)
-
-first_answer = pygame.Rect(WIDTH*0.1, 0.4*HEIGHT-0.08*HEIGHT, HEIGHT*0.5, 0.1*HEIGHT)
-
 # Opcje pola rozwijanego
 loaded_dicts = import_list('dicts.pickle3')
 voivodeship_options = import_list(file_name='voivodeship_options')
 level_options = ["Easy", "Medium", "Hard", "Extreme"]
 
-# Wprowadzanie nicku
-manager = pygame_gui.UIManager((1600, 900))
-frame = (WIDTH/2, HEIGHT/20)
-text_input = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((WIDTH/2 - frame[0]/2, HEIGHT/2 - frame[1]/2), frame), manager=manager,
-                                               object_id='#main_text_entry')
+
+def position_update():
+    _drop_down = pygame.Rect(0.1 * WIN.get_width(),
+                             20 + 1.1 * app_logo.get_height(),
+                             0.25 * WIN.get_width(),
+                             0.04 * WIN.get_height())
+
+    _level_drop_down = pygame.Rect(0.9 * WIN.get_width() - _drop_down[2],
+                                   20 + 1.1 * app_logo.get_height(),
+                                   0.25 * WIN.get_width(),
+                                   0.04 * WIN.get_height())
+
+    _play_button = pygame.Rect(0.65 * WIN.get_width(),
+                               0.82 * WIN.get_height(),
+                               0.25 * WIN.get_height(),
+                               0.04 * WIN.get_height())
+
+    _exit_button = pygame.Rect(0.65 * WIN.get_width(),
+                               0.86 * WIN.get_height(),
+                               0.25 * WIN.get_height(),
+                               0.04 * WIN.get_height())
+
+    _first_answer = pygame.Rect(0.1 * WIN.get_width(),
+                                0.32 * WIN.get_height(),
+                                0.5 * WIN.get_height(),
+                                0.1 * WIN.get_height())
+    _mode_button = pygame.Rect(WIN.get_width() / 2 - 0.0625 * WIN.get_width(),
+                               20 + 1.1 * app_logo.get_height(),
+                               0.125 * WIN.get_width(),
+                               0.04 * WIN.get_height())
+
+    return _drop_down, _level_drop_down, _play_button, _exit_button, _first_answer, _mode_button
 
 
 def draw_element_with_background(color, element, position):
@@ -141,7 +155,6 @@ def exit_execute(_run, stage=0):
 
 
 def multiplier(voivodeship, level, voivodeship_base, level_base):
-
     a = 1
     b = 0
 
@@ -167,61 +180,65 @@ def load_df(name):
 
 
 def save_score(nick, level, voivodeship, points):
-
-    # df = pd.DataFrame(columns=["Nick", "Level", "Voivodeship", "Points"])
-    # df.to_excel("test.xlsx")
-
     df = load_df("test.xlsx")
 
-    updater = pd.DataFrame(columns=["Nick", "Level", "Voivodeship", "Points"])
-    updater.at[0, 'Nick'] = nick
-    updater.at[0, 'Level'] = level
-    updater.at[0, 'Voivodeship'] = voivodeship
-    updater.at[0, 'Points'] = points
+    updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Punkty"])
+    updater.at[0, 'Nazwa'] = nick
+    updater.at[0, 'Poziom'] = level
+    updater.at[0, 'Województwo'] = voivodeship
+    updater.at[0, 'Punkty'] = points
 
     df = pd.concat([updater, df], ignore_index=True)
 
-    df.to_excel("test.xlsx", columns=["Nick", "Level", "Voivodeship", "Points"])
+    df.to_excel("test.xlsx", columns=["Nazwa", "Poziom", "Województwo", "Punkty"])
 
 
 # Funkcja do renderowania DataFrame
 def render_dataframe(df):
-
-    x, y = WIDTH/10, HEIGHT/2.8
-    cell_width, cell_height = WIDTH/5, HEIGHT/30
+    _x, _y = WIN.get_width() / 10, WIN.get_height() / 2.8
+    cell_width, cell_height = WIN.get_width() / 5, WIN.get_height() / 30
 
     text = font_2.render("Ranking ostatnich rozgrywek:", True, dark_blue)
-    WIN.blit(text, (20, HEIGHT/3.5))
+    WIN.blit(text, (20, 20 + WIN.get_height() / 3.5))
 
     for col in df.columns[1:]:
-        text = font_2.render(col, True, black)
-        WIN.blit(text, (x - WIDTH/300, y))
-        x += cell_width
+        text = font.render(col, True, black)
+        WIN.blit(text, (_x - WIN.get_width() / 300, 20 + _y))
+        _x += cell_width
 
-    y += 2*cell_height
+    _y += 2 * cell_height
 
     for _, row in islice(df.iterrows(), 10):
-        x = 20
+        _x = 20
         for value in row:
             if isinstance(value, int) and value is not row.iloc[-1]:
                 text = font.render(str(value + 1), True, black)
             else:
                 text = font.render(str(value), True, black)
-            if x == 20:
-                WIN.blit(text, (x, y))
+            if _x == 20:
+                WIN.blit(text, (_x, _y))
             else:
-                WIN.blit(text, (x - WIDTH/9, y))
-            x += cell_width
-        y += cell_height
+                WIN.blit(text, (_x - WIN.get_width() / 9, _y))
+            _x += cell_width
+        _y += cell_height
+
+
+def nick_input():
+    _manager = pygame_gui.UIManager((WIN.get_width(), WIN.get_height()))
+    _frame = (WIN.get_width() / 2, WIN.get_height() / 20)
+    _text_input = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(
+        (WIN.get_width() / 2 - _frame[0] / 2, WIN.get_height() / 2 - _frame[1] / 2), _frame),
+        manager=_manager, object_id='#main_text_entry')
+
+    return _manager, _frame, _text_input
 
 
 def get_user_name():
-
-    text = font_2.render("Wprowadź swoją nazwę użytkownika i wciśnij klawisz ENTER:", True, dark_blue)
+    text = font.render("Wprowadź nazwę użytkownika i wciśnij klawisz ENTER:", True, dark_blue)
     _run = True
 
     while _run:
-        UI_REFRESH_RATE = clock.tick(60) / 1000
+
         for event in pygame.event.get():
             if (event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and
                     event.ui_object_id == '#main_text_entry'):
@@ -233,42 +250,46 @@ def get_user_name():
         manager.update(UI_REFRESH_RATE)
 
         WIN.fill("white")
-        WIN.blit(text, (WIDTH/2 - text.get_width()/2, text_input.get_starting_height() + 5*text.get_height()))
+        WIN.blit(text, (WIN.get_width() / 2 - text.get_width() / 2,
+                        text_input.get_starting_height() + 5 * text.get_height()))
 
         manager.draw_ui(WIN)
         pygame.display.update()
 
 
 def game(_play, _score):
-
     score_multiplier = multiplier(active_option, active_level_option, voivodeship_options, level_options)
 
     entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=mode)
     registration, county, answers = entity.ask_question()
+    position_update()
 
-    if not active_option == 'Wszystkie':
+    if not active_option == voivodeship_options[-1]:
         plates_left = len(loaded_dicts[voivodeship_options.index(active_option)])
     else:
         plates_left = 409
 
     while _play:
 
-        score_surface = font_2.render("Score: " + str(_score), True, black)
-        left_surface = font_2.render("Plates left: " + str(plates_left), True, black)
+        score_surface = font_2.render("Punkty: " + str(_score), True, black)
         registration_surface = font_2.render(registration, True, black)
 
-        registration_position = (0.5 * WIDTH - 0.5 * registration_surface.get_width()
-                                 + 0.27 * registration_surface.get_width(),
-                                 0.04 * HEIGHT + 0.5 * registration_template.get_height() -
+        registration_template_position = (0.5 * WIN.get_width() - 0.5 * registration_template.get_width(),
+                                          0.04 * WIN.get_height())
+        registration_position = (0.5 * WIN.get_width() - 0.215 * registration_surface.get_width(),
+                                 0.04 * WIN.get_height() + 0.5 * registration_template.get_height() -
                                  0.42 * registration_surface.get_height())
 
-        draw_element_with_background((175, 238, 238), registration_template, registration_template_position)
-        score_position = (WIDTH - 2 * score_surface.get_width(), registration_position.__getitem__(1))
+        draw_element_with_background(bright_blue, registration_template, registration_template_position)
+        score_position = (WIN.get_width() - 2 * score_surface.get_width(), registration_position.__getitem__(1))
         left_position = (score_surface.get_width(), registration_position.__getitem__(1))
+
+        if mode == 1:
+            left_surface = font_2.render("Pozostało: " + str(plates_left), True, black)
+            WIN.blit(left_surface, left_position)
 
         WIN.blit(registration_surface, registration_position)
         WIN.blit(score_surface, score_position)
-        WIN.blit(left_surface, left_position)
 
         for _event in pygame.event.get():
 
@@ -280,24 +301,23 @@ def game(_play, _score):
             elif _event.type == pygame.MOUSEBUTTONDOWN:
                 if exit_button.collidepoint(_event.pos):
                     _play = exit_execute(_play, stage=1)
-                for i in range(2):
-                    for j in range(2):
-                        if i == 1:
-                            x = first_answer.x
-                        else:
-                            x = WIDTH - first_answer.x - first_answer.width
 
-                        y = first_answer.y + j * first_answer.y
+                for _i in range(2):
+                    _x = first_answer.x if _i == 1 else WIN.get_width() - first_answer.x - first_answer.width
+                    for _j in range(2):
+                        _y = first_answer.y + _j * first_answer.y
+                        draw_rect((_x, _y, first_answer.width, first_answer.height), answers[2 * _i + _j], grey)
 
-                        _square_option = pygame.Rect(x, y, first_answer.width, first_answer.height)
+                        _square_option = pygame.Rect(_x, _y, first_answer.width, first_answer.height)
 
                         if _square_option.collidepoint(_event.pos):
-                            if answers[2 * i + j] == county:
+                            if answers[2 * _i + _j] == county:
                                 _score += score_multiplier
                                 plates_left -= 1
                                 try:
                                     registration, county, answers = entity.ask_question()
-                                except Exception:
+                                except IndexError as e:
+                                    print(e)
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
                                     save_score(nickname, active_level_option, active_option, _score)
                                     _play = False
@@ -307,33 +327,31 @@ def game(_play, _score):
                                     _score = 0
                                 try:
                                     registration, county, answers = entity.ask_question()
-                                except Exception:
+                                except IndexError as e:
+                                    print(e)
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
                                     save_score(nickname, active_level_option, active_option, _score)
                                     _play = False
-        for i in range(2):
-            for j in range(2):
-                if i == 1:
-                    x = first_answer.x
-                else:
-                    x = WIDTH - first_answer.x - first_answer.width
-                y = first_answer.y + j * first_answer.y
+        for _i in range(2):
+            _x = first_answer.x if _i == 1 else WIN.get_width() - first_answer.x - first_answer.width
+            for _j in range(2):
+                _y = first_answer.y + _j * first_answer.y
+                draw_rect((_x, _y, first_answer.width, first_answer.height), answers[2 * _i + _j], grey)
 
-                draw_rect((x, y, first_answer.width, first_answer.height), answers[2 * i + j], grey)
-
-        draw_rect(exit_button, "Exit", grey)
+        draw_rect(exit_button, "Wyjdź", grey)
         pygame.display.flip()
 
 
-clock = pygame.time.Clock()
-run = True
-
+# Wprowadzanie nicku
+manager, frame, text_input = nick_input()
 nickname = get_user_name()
+
 while run:
 
     clock.tick(60)
-    draw_element_with_background(white, app_logo, (0.5 * WIDTH - 0.5 * app_logo.get_width(), 0.02 * HEIGHT))
-
+    draw_element_with_background(white, app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(),
+                                                   0.02 * WIN.get_height()))
+    drop_down, level_drop_down, play_button, exit_button, first_answer, mode_button = position_update()
     render_dataframe(load_df("test.xlsx"))
 
     for event in pygame.event.get():
@@ -342,6 +360,8 @@ while run:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 run = exit_execute(run)
+        elif event.type == VIDEORESIZE:
+            WIN = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if drop_down.collidepoint(event.pos):
                 full_list = not full_list
@@ -351,6 +371,8 @@ while run:
             elif level_drop_down.collidepoint(event.pos):
                 full_level_list = not full_level_list
                 full_list = False
+            elif mode_button.collidepoint(event.pos):
+                mode = not mode
             elif full_list:
                 for i, option in enumerate(voivodeship_options):
                     y = drop_down.y + (i + 1) * drop_down.height
@@ -373,15 +395,20 @@ while run:
                         full_level_list = False
 
             if play_button.collidepoint(event.pos):
-                if not active_option == "Choose voivodeship" and not active_level_option == "Choose level":
+                if not active_option == "Wybierz województwo" and not active_level_option == "Wybierz poziom":
                     game(True, score)
 
-    if active_option != 'Choose voivodeship' and active_level_option != 'Choose level':
-        draw_rect(play_button, "Play!", green)
+    if active_option != 'Wybierz województwo' and active_level_option != 'Wybierz poziom':
+        draw_rect(play_button, "Zagraj!", green)
     else:
-        draw_rect(play_button, "Play!", grey)
+        draw_rect(play_button, "Zagraj", grey)
 
-    draw_rect(exit_button, "Exit", grey)
+    if mode == 0:
+        draw_rect(mode_button, tribes[mode], grey)
+    else:
+        draw_rect(mode_button, tribes[mode], dark_grey)
+
+    draw_rect(exit_button, "Wyjdź", grey)
     draw_list(drop_down, voivodeship_options, active_list=full_list, active_choice=active_option)
     draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)
 
@@ -479,8 +506,6 @@ while run:
 #
 
 
-
-
 #
 # levenshtein_matrix = np.zeros((len(values_list), len(values_list)))
 #
@@ -491,8 +516,6 @@ while run:
 # df = pd.DataFrame(levenshtein_matrix, columns=values_list, index=values_list)
 
 # df.to_pickle('levenshtein_matrix.pickle')
-
-
 
 
 # print(levenshtein_matrix)
@@ -507,4 +530,3 @@ while run:
 #     for j in range(409):
 #         if j>i:
 #             df.iat[i, j] = ''
-

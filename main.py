@@ -401,7 +401,7 @@ while run:
     if active_option != 'Wybierz województwo' and active_level_option != 'Wybierz poziom':
         draw_rect(play_button, "Zagraj!", green)
     else:
-        draw_rect(play_button, "Zagraj", grey)
+        draw_rect(play_button, "Zagraj!", grey)
 
     if mode == 0:
         draw_rect(mode_button, tribes[mode], grey)

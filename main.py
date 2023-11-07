@@ -13,6 +13,7 @@ from itertools import islice
 import pygame_gui
 import pygame.freetype
 from pygame.locals import *
+import threading
 
 pygame.init()
 pygame.font.init()
@@ -100,6 +101,7 @@ def position_update():
                                 0.32 * WIN.get_height(),
                                 0.5 * WIN.get_height(),
                                 0.1 * WIN.get_height())
+
     _mode_button = pygame.Rect(WIN.get_width() / 2 - 0.0625 * WIN.get_width(),
                                20 + 1.1 * app_logo.get_height(),
                                0.125 * WIN.get_width(),
@@ -195,11 +197,11 @@ def save_score(nick, level, voivodeship, points):
 
 # Funkcja do renderowania DataFrame
 def render_dataframe(df):
-    _x, _y = WIN.get_width() / 10, WIN.get_height() / 2.8
+    _x, _y = WIN.get_width() / 10, WIN.get_height() / 2.3
     cell_width, cell_height = WIN.get_width() / 5, WIN.get_height() / 30
 
     text = font_2.render("Ranking ostatnich rozgrywek:", True, dark_blue)
-    WIN.blit(text, (20, 20 + WIN.get_height() / 3.5))
+    WIN.blit(text, (20, 20 + WIN.get_height() / 3.4))
 
     for col in df.columns[1:]:
         text = font.render(col, True, black)
@@ -208,7 +210,7 @@ def render_dataframe(df):
 
     _y += 2 * cell_height
 
-    for _, row in islice(df.iterrows(), 10):
+    for _, row in islice(df.iterrows(), 8):
         _x = 20
         for value in row:
             if isinstance(value, int) and value is not row.iloc[-1]:
@@ -258,6 +260,7 @@ def get_user_name():
 
 
 def game(_play, _score):
+
     score_multiplier = multiplier(active_option, active_level_option, voivodeship_options, level_options)
 
     entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=mode)
@@ -272,6 +275,7 @@ def game(_play, _score):
     while _play:
 
         score_surface = font_2.render("Punkty: " + str(_score), True, black)
+        bravo = font_2.render("Brawo!", True, green)
         registration_surface = font_2.render(registration, True, black)
 
         registration_template_position = (0.5 * WIN.get_width() - 0.5 * registration_template.get_width(),
@@ -306,7 +310,6 @@ def game(_play, _score):
                     _x = first_answer.x if _i == 1 else WIN.get_width() - first_answer.x - first_answer.width
                     for _j in range(2):
                         _y = first_answer.y + _j * first_answer.y
-                        draw_rect((_x, _y, first_answer.width, first_answer.height), answers[2 * _i + _j], grey)
 
                         _square_option = pygame.Rect(_x, _y, first_answer.width, first_answer.height)
 
@@ -332,6 +335,7 @@ def game(_play, _score):
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
                                     save_score(nickname, active_level_option, active_option, _score)
                                     _play = False
+
         for _i in range(2):
             _x = first_answer.x if _i == 1 else WIN.get_width() - first_answer.x - first_answer.width
             for _j in range(2):

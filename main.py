@@ -184,15 +184,15 @@ def load_df(name):
 def save_score(nick, level, voivodeship, points):
     df = load_df("test.xlsx")
 
-    updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Punkty"])
+    updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
     updater.at[0, 'Nazwa'] = nick
     updater.at[0, 'Poziom'] = level
     updater.at[0, 'Województwo'] = voivodeship
-    updater.at[0, 'Punkty'] = points
+    updater.at[0, 'Skuteczność[%]'] = points
 
     df = pd.concat([updater, df], ignore_index=True)
 
-    df.to_excel("test.xlsx", columns=["Nazwa", "Poziom", "Województwo", "Punkty"])
+    df.to_excel("test.xlsx", columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
 
 
 # Funkcja do renderowania DataFrame
@@ -262,7 +262,6 @@ def get_user_name():
 def game(_play, _score):
 
     score_multiplier = multiplier(active_option, active_level_option, voivodeship_options, level_options)
-
     entity = Voivodeship(voivodeship=active_option, level=active_level_option, mode=mode)
     registration, county, answers = entity.ask_question()
     position_update()
@@ -274,7 +273,17 @@ def game(_play, _score):
 
     while _play:
 
-        score_surface = font_2.render("Punkty: " + str(_score), True, black)
+        if not active_option == voivodeship_options[-1]:
+            score_perc = str(
+                round(100 * _score / (score_multiplier * len(loaded_dicts[voivodeship_options.index(active_option)]))))
+        else:
+            score_perc = str(round(100 * _score / (score_multiplier * 409)))
+
+        if mode == 1:
+            score_surface = font_2.render("Poprawnie: " + score_perc + '%', True, black)
+        else:
+            score_surface = font_2.render("Poprawnie: " + str(_score), True, black)
+
         bravo = font_2.render("Brawo!", True, green)
         registration_surface = font_2.render(registration, True, black)
 
@@ -285,8 +294,8 @@ def game(_play, _score):
                                  0.42 * registration_surface.get_height())
 
         draw_element_with_background(bright_blue, registration_template, registration_template_position)
-        score_position = (WIN.get_width() - 2 * score_surface.get_width(), registration_position.__getitem__(1))
-        left_position = (score_surface.get_width(), registration_position.__getitem__(1))
+        score_position = (0.9 * WIN.get_width() - score_surface.get_width(), registration_position.__getitem__(1))
+        left_position = (0.1 * WIN.get_width(), registration_position.__getitem__(1))
 
         if mode == 1:
             left_surface = font_2.render("Pozostało: " + str(plates_left), True, black)
@@ -322,7 +331,7 @@ def game(_play, _score):
                                 except IndexError as e:
                                     print(e)
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
-                                    save_score(nickname, active_level_option, active_option, _score)
+                                    save_score(nickname, active_level_option, active_option, score_perc)
                                     _play = False
                             else:
                                 plates_left -= 1
@@ -333,7 +342,7 @@ def game(_play, _score):
                                 except IndexError as e:
                                     print(e)
                                     show_message("Brawo!", "Wszystkie tablice zostały odgadnięte!")
-                                    save_score(nickname, active_level_option, active_option, _score)
+                                    save_score(nickname, active_level_option, active_option, score_perc)
                                     _play = False
 
         for _i in range(2):

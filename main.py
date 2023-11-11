@@ -20,7 +20,7 @@ pygame.font.init()
 pygame.mixer.init()
 
 # Window creation
-WIN = pygame.display.set_mode((1600, 800), pygame.RESIZABLE)
+WIN = pygame.display.set_mode((1200, 800), pygame.RESIZABLE)
 pygame.display.set_caption("Registration Plates Quiz")
 
 # Kolory
@@ -47,6 +47,7 @@ active_level_option = "Wybierz poziom"
 tribes = {0: 'Powtarzanie', 1: 'Bez powtórzeń'}
 mode = 0
 score = 0
+nick_executed = False
 clock = pygame.time.Clock()
 UI_REFRESH_RATE = clock.tick(60) / 10000
 run = True
@@ -239,10 +240,14 @@ def get_user_name():
     text = font.render("Wprowadź nazwę użytkownika i wciśnij klawisz ENTER:", True, dark_blue)
     _run = True
 
+    manager, frame, text_input = nick_input()
+
     while _run:
 
         for event in pygame.event.get():
-            if (event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and
+            if event.type == VIDEORESIZE:
+                manager, frame, text_input = nick_input()
+            elif (event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and
                     event.ui_object_id == '#main_text_entry'):
                 _run = False
                 return event.text
@@ -284,7 +289,7 @@ def game(_play, _score):
         else:
             score_surface = font_2.render("Poprawnie: " + str(_score), True, black)
 
-        bravo = font_2.render("Brawo!", True, green)
+        # bravo = font_2.render("Brawo!", True, green)
         registration_surface = font_2.render(registration, True, black)
 
         registration_template_position = (0.5 * WIN.get_width() - 0.5 * registration_template.get_width(),
@@ -355,10 +360,6 @@ def game(_play, _score):
         pygame.display.flip()
 
 
-# Wprowadzanie nicku
-manager, frame, text_input = nick_input()
-nickname = get_user_name()
-
 while run:
 
     clock.tick(60)
@@ -368,6 +369,9 @@ while run:
     render_dataframe(load_df("test.xlsx"))
 
     for event in pygame.event.get():
+        if not nick_executed:
+            nickname = get_user_name()
+            nick_executed = True
         if event.type == pygame.QUIT:
             run = exit_execute(run)
         elif event.type == pygame.KEYDOWN:

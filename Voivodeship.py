@@ -16,15 +16,19 @@ def import_df(file_name):
 
 class Voivodeship:
     def __init__(self, voivodeship, level, mode=1):
-        self.mode = mode
-        self.level = level
         self.voivodeship = voivodeship
-        self.merged_dicts = {}
+        self.level = level
+        self.mode = mode
         self.already_selected = {}
-        self.loaded_dicts = import_list('dicts.pickle3')
+        self.merged_dicts = {}
         self.voivodeship_options = import_list(file_name='voivodeship_options')
-        self.extreme_matrix = import_df(file_name='extreme_matrix.pickle')
+        self.loaded_dicts = import_list('dicts.pickle3')
         self.levenshtein_matrix = import_df(file_name='levenshtein_matrix.pickle')
+        self.extreme_matrix = import_df(file_name='extreme_matrix.pickle')
+        if not self.voivodeship == self.voivodeship_options[-1]:
+            self.all = len(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)])
+        else:
+            self.all = 409
 
     def random_plate(self):
 

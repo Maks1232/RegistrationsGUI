@@ -21,6 +21,7 @@ reg_template = pygame.image.load(os.path.join('Images', 'registration_template.p
 
 def load_df(name):
     df = pd.read_excel(name)
+    df.sort_values(by=df.columns[-1], ascending=False, inplace=True)
     return df
 
 

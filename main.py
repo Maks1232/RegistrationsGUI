@@ -152,11 +152,11 @@ def exit_execute(_run, stage=0):
 
 
 def render_dataframe(df):
-    _x, _y = WIN.get_width() / 10, WIN.get_height() / 2.3
+    _x, _y = WIN.get_width() / 10, WIN.get_height() / 2.8
     cell_width, cell_height = WIN.get_width() / 5, WIN.get_height() / 30
 
-    text = font_2.render("Ranking ostatnich rozgrywek:", True, dark_blue)
-    WIN.blit(text, (20, 20 + WIN.get_height() / 3.4))
+    text = font_2.render("Ranking:", True, dark_blue)
+    WIN.blit(text, (20, 20 + WIN.get_height() / 3.9))
 
     for col in df.columns[1:]:
         text = font.render(col, True, black)
@@ -165,11 +165,11 @@ def render_dataframe(df):
 
     _y += 2 * cell_height
 
-    for _, row in islice(df.iterrows(), 8):
+    for num, (_, row) in enumerate(islice(df.iterrows(), 10), start=1):
         _x = 20
         for value in row:
             if isinstance(value, int) and value is not row.iloc[-1]:
-                text = font.render(str(value + 1), True, black)
+                text = font.render(str(num), True, black)
             else:
                 text = font.render(str(value), True, black)
             if _x == 20:
@@ -199,15 +199,15 @@ def get_user_name():
 
     while _run:
 
-        for event in pygame.event.get():
-            if event.type == VIDEORESIZE:
+        for _event in pygame.event.get():
+            if _event.type == VIDEORESIZE:
                 manager, frame, text_input = nick_input()
                 text_input.focus()
-            elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == '#main_text_entry':
+            elif _event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and _event.ui_object_id == '#main_text_entry':
                 _run = False
-                return event.text
+                return _event.text
 
-            manager.process_events(event)
+            manager.process_events(_event)
 
         manager.update(UI_REFRESH_RATE)
 

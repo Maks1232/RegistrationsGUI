@@ -42,21 +42,15 @@ def multiplier(voivodeship, level, voivodeship_base):
 
     level_base = ["Easy", "Medium", "Hard", "Extreme"]
 
-    a = 1
-    b = 0
+    multipliers = {
+        (voivodeship_base[-1], level_base[-1]): (2, 3),
+        (voivodeship_base[-1], level_base[-2]): (2, 2),
+        (voivodeship_base[-1], level_base[0]): (0, 1),
+        (not voivodeship_base[-1], level_base[-1]): (1, 2),
+        (not voivodeship_base[-1], level_base[-2]): (0, 1)
+    }
 
-    if voivodeship == voivodeship_base[-1] and level == level_base[-1]:
-        a = 2
-        b = 3
-    elif voivodeship == voivodeship_base[-1] and level == level_base[-2]:
-        a = 2
-        b = 2
-    elif not voivodeship == voivodeship_base[-1] and level == level_base[-1]:
-        a = 1
-        b = 2
-    elif (voivodeship == voivodeship_base[-1] and level == level_base[0] or
-          not voivodeship == voivodeship_base[-1] and level == level_base[-2]):
-        b = 1
+    a, b = multipliers.get((voivodeship, level), (1, 0))
 
     return a + b
 
@@ -191,16 +185,15 @@ class Game:
             text = font.render(f"Pozostało: {self.questions_left}", True, black)
             self.screen.blit(text, (0.1 * self.screen.get_width(),
                                     0.04 * self.screen.get_height() + 0.5 * text.get_height()))
-        else:
-            pass
 
     def update_score_info(self):
+
         font = pygame.font.Font(None, 48)
         if self.mode == 1:
             self.score_percentage = round(100 * self._score / (self.multiplier * self.voivodeship.all))
-            text = font.render(f"Twój wynik: {self.score_percentage}%", True, (0, 0, 0))
+            text = font.render(f"Twój wynik: {self.score_percentage}%", True, black)
         else:
-            text = font.render(f"Twój wynik: {self._score }", True, (0, 0, 0))
+            text = font.render(f"Twój wynik: {self._score }", True, black)
 
         self.screen.blit(text, (0.9 * self.screen.get_width() - text.get_width(),
                                 0.04 * self.screen.get_height() + 0.5 * text.get_height()))

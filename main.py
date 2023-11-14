@@ -53,7 +53,6 @@ clock = pygame.time.Clock()
 UI_REFRESH_RATE = clock.tick(60) / 10000
 run = True
 
-
 # Loading images
 app_logo = pygame.image.load(os.path.join('Images', 'title_v1.png'))
 registration_template = pygame.image.load(os.path.join('Images', 'registration_template.png'))
@@ -146,38 +145,12 @@ def show_message(title, message):
 
 
 def exit_execute(_run, stage=0):
-    if stage == 0:
-        _result = messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść z aplikacji?")
-    else:
-        _result = messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść do menu?")
+    message = "Czy na pewno chcesz wyjść z aplikacji?" if stage == 0 else "Czy na pewno chcesz wyjść do menu?"
+    _result = messagebox.askquestion("Potwierdzenie", message)
 
-    if _result == "yes":
-        _run = False
-
-    return _run
+    return _run and _result != "yes"
 
 
-def multiplier(voivodeship, level, voivodeship_base, level_base):
-    a = 1
-    b = 0
-
-    if voivodeship == voivodeship_base[-1] and level == level_base[-1]:
-        a = 2
-        b = 3
-    elif voivodeship == voivodeship_base[-1] and level == level_base[-2]:
-        a = 2
-        b = 2
-    elif not voivodeship == voivodeship_base[-1] and level == level_base[-1]:
-        a = 1
-        b = 2
-    elif (voivodeship == voivodeship_base[-1] and level == level_base[0] or
-          not voivodeship == voivodeship_base[-1] and level == level_base[-2]):
-        b = 1
-
-    return a + b
-
-
-# Funkcja do renderowania DataFrame
 def render_dataframe(df):
     _x, _y = WIN.get_width() / 10, WIN.get_height() / 2.3
     cell_width, cell_height = WIN.get_width() / 5, WIN.get_height() / 30
@@ -222,12 +195,14 @@ def get_user_name():
     _run = True
 
     manager, frame, text_input = nick_input()
+    text_input.focus()
 
     while _run:
 
         for event in pygame.event.get():
             if event.type == VIDEORESIZE:
                 manager, frame, text_input = nick_input()
+                text_input.focus()
             elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == '#main_text_entry':
                 _run = False
                 return event.text
@@ -242,6 +217,18 @@ def get_user_name():
 
         manager.draw_ui(WIN)
         pygame.display.update()
+
+
+def handle_drop_down_event(_drop_down, _options, _event, _full_list_flag, _active_option):
+    if _full_list_flag:
+        for _i, _option in enumerate(_options):
+            _y = _drop_down.y + (_i + 1) * _drop_down.height
+            square_option = pygame.Rect(_drop_down.x, _y, _drop_down.width, _drop_down.height)
+
+            if square_option.collidepoint(event.pos):
+                _active_option = _option
+                _full_list_flag = False
+    return _active_option, _full_list_flag
 
 
 while run:
@@ -275,43 +262,22 @@ while run:
             elif mode_button.collidepoint(event.pos):
                 mode = not mode
             elif full_list:
-                for i, option in enumerate(voivodeship_options):
-                    y = drop_down.y + (i + 1) * drop_down.height
-
-                    square_option = pygame.Rect(drop_down.x, y, drop_down.width, drop_down.height)
-
-                    if square_option.collidepoint(event.pos):
-                        active_option = option
-                        full_list = False
+                active_option, full_list = handle_drop_down_event(drop_down, voivodeship_options, event, full_list,
+                                                                  active_option)
             elif full_level_list:
-                for i, option in enumerate(level_options):
-                    y = level_drop_down.y + (i + 1) * level_drop_down.height
-
-                    square_option = pygame.Rect(level_drop_down.x, y, level_drop_down.width, level_drop_down.height)
-
-                    if square_option.collidepoint(event.pos):
-                        active_level_option = option
-                        full_level_list = False
-
+                active_level_option, full_level_list = handle_drop_down_event(level_drop_down, level_options, event,
+                                                                              full_level_list, active_level_option)
             if play_button.collidepoint(event.pos):
                 if not active_option == "Wybierz województwo" and not active_level_option == "Wybierz poziom":
-
                     game_instance = Game(WIN, active_option, active_level_option, mode, nickname)
                     game_instance.run()
 
-    if active_option != 'Wybierz województwo' and active_level_option != 'Wybierz poziom':
-        draw_rect(play_button, "Zagraj!", green)
-    else:
-        draw_rect(play_button, "Zagraj!", grey)
-
-    if mode == 0:
-        draw_rect(mode_button, tribes[mode], grey)
-    else:
-        draw_rect(mode_button, tribes[mode], dark_grey)
-
-    draw_rect(exit_button, "Wyjdź", grey)
+    draw_rect(mode_button, tribes[mode], dark_grey if mode != 0 else grey)
     draw_list(drop_down, voivodeship_options, active_list=full_list, active_choice=active_option)
     draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)
+    draw_rect(exit_button, "Wyjdź", grey)
+    draw_rect(play_button, "Zagraj!",
+              green if active_option != 'Wybierz województwo' and active_level_option != 'Wybierz poziom' else grey)
 
     pygame.display.flip()
 

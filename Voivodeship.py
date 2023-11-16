@@ -20,9 +20,9 @@ class Voivodeship:
         self.level = level
         self.mode = mode
         self.already_selected = {}
-        self.merged_dicts = {}
         self.voivodeship_options = import_list(file_name='voivodeship_options')
         self.loaded_dicts = import_list('dicts.pickle3')
+        self.merged_dicts = self.dictionary_merge()
         self.levenshtein_matrix = import_df(file_name='levenshtein_matrix.pickle')
         self.extreme_matrix = import_df(file_name='extreme_matrix.pickle')
         if not self.voivodeship == self.voivodeship_options[-1]:
@@ -37,6 +37,7 @@ class Voivodeship:
                 plate, county = random.choice(list(self.merged_dicts.items() - self.already_selected.items()))
             else:
                 plate, county = random.choice(list(self.merged_dicts.items()))
+
         elif self.level == "Hard":
             if self.mode == 1:
                 plate, county = random.choice(
@@ -56,15 +57,14 @@ class Voivodeship:
         return plate, county
 
     def dictionary_merge(self):
+        merged = {}
         for _dict in self.loaded_dicts:
-            self.merged_dicts.update(_dict)
+            merged.update(_dict)
+        return merged
 
     def get_random_question(self):
 
         if self.voivodeship == self.voivodeship_options[-1]:
-            self.dictionary_merge()
-            plate, county = self.random_plate()
-        elif self.level == "Hard":
             self.dictionary_merge()
             plate, county = self.random_plate()
         else:
@@ -92,7 +92,7 @@ class Voivodeship:
         else:
             col = None
 
-        iterator = 1
+        iterator = 0
 
         while len(answers) < 4:
             if self.voivodeship == self.voivodeship_options[-1] and (self.level == "Medium" or self.level == 'Easy'):

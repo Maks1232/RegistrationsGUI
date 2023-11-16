@@ -1,5 +1,3 @@
-import pygame
-import sys
 import os
 from AnswerRect import *
 from Voivodeship import *
@@ -25,20 +23,6 @@ def load_df(name):
     return df
 
 
-def save_score(nick, level, voivodeship, points):
-    df = load_df("test.xlsx")
-
-    updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
-    updater.at[0, 'Nazwa'] = nick
-    updater.at[0, 'Poziom'] = level
-    updater.at[0, 'Województwo'] = voivodeship
-    updater.at[0, 'Skuteczność[%]'] = points
-
-    df = pd.concat([updater, df], ignore_index=True)
-
-    df.to_excel("test.xlsx", columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
-
-
 def multiplier(voivodeship, level, voivodeship_base):
 
     level_base = ["Easy", "Medium", "Hard", "Extreme"]
@@ -58,17 +42,17 @@ def multiplier(voivodeship, level, voivodeship_base):
 
 class Game:
     def __init__(self, screen, active_option, active_level_option, mode, nickname):
-        self.nickname = nickname
+        self.screen = screen
         self.active_option = active_option
         self.active_level_option = active_level_option
         self.mode = mode
+        self.nickname = nickname
         self._play = True
         self._score = 0
-        self.screen = screen
         self.manager = pygame_gui.UIManager((screen.get_width(), screen.get_height()))
         self.voivodeship = Voivodeship(voivodeship=self.active_option, level=self.active_level_option, mode=self.mode)
-        self.questions_left = self.voivodeship.all
         self.registration, self.county, self.answers = self.voivodeship.ask_question()
+        self.questions_left = self.voivodeship.all
         self.answer_blocks = [
             AnswerRect(0.1 * screen.get_width(),
                        0.47 * screen.get_height(),
@@ -120,26 +104,38 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         self._play = self.exit_execute()
                 if event.type == pygame.VIDEORESIZE:
-                    pass
+                    self._play = self.reset()
                 if event.type == pygame.USEREVENT:
                     if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                         if event.ui_element == self.exit_button:
                             self._play = self.exit_execute()
                         else:
                             self.handle_answer_click(event.ui_element)
-
-                        self.next_question()
-                        self.update_answer_blocks()
+                            self.next_question()
+                            self.update_answer_blocks()
 
                 self.manager.process_events(event)
 
             self.manager.update(time_delta)
 
-            self.draw_elements()
+            self.draw_elements(time_delta)
 
             self.manager.draw_ui(self.screen)
 
             pygame.display.flip()
+
+    def save_score(self, file):
+        df = load_df(file)
+
+        updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
+        updater.at[0, 'Nazwa'] = self.nickname
+        updater.at[0, 'Poziom'] = self.active_level_option
+        updater.at[0, 'Województwo'] = self.active_option
+        updater.at[0, 'Skuteczność[%]'] = self.score_percentage
+
+        df = pd.concat([updater, df], ignore_index=True)
+        df = df.sort_values(by="Skuteczność[%]", ascending=False).head(50)
+        df.to_excel(file, columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
 
     def next_question(self):
         try:
@@ -149,14 +145,14 @@ class Game:
             self.notification()
             self.update_question_info()
             self.update_score_info()
-            save_score(self.nickname, self.active_level_option, self.active_option, self.score_percentage)
+            self.save_score("test.xlsx")
             self._play = False
 
     def update_answer_blocks(self):
         for i, answer_block in enumerate(self.answer_blocks):
             self.answer_blocks[i].update_text(self.answers[i])
 
-    def draw_elements(self):
+    def draw_elements(self, delta):
         self.screen.fill(bright_blue)
 
         font = pygame.font.Font(None, 72)
@@ -174,9 +170,9 @@ class Game:
                                             0.04 * self.screen.get_height() + 2 * reg_template.get_height()))
 
         for block in self.answer_blocks:
-            block.button.update(0)
+            block.button.update(delta)
 
-        self.exit_button.update(0)
+        self.exit_button.update(delta)
         self.update_question_info()
         self.update_score_info()
 
@@ -204,6 +200,12 @@ class Game:
             if block.button == clicked_block and block.text == self.county:
                 self._score += self.multiplier
         self.questions_left += -1
+
+    @staticmethod
+    def reset():
+        pygame.display.flip()
+        messagebox.showinfo("Restart", "Zmiana rozdzielczości wymaga restartu!")
+        return False
 
     @staticmethod
     def exit_execute():

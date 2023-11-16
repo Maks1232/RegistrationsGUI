@@ -9,6 +9,7 @@ import Levenshtein
 from Voivodeship import Voivodeship
 import tkinter as tk
 from tkinter import messagebox
+import openpyxl
 from itertools import islice
 import pygame_gui
 import pygame.freetype
@@ -169,9 +170,26 @@ def render_dataframe(df):
         _x = 20
         for value in row:
             if isinstance(value, int) and value is not row.iloc[-1]:
+
+                # if num == 1:
+                #     text = font.render(str(num), True, (255, 215, 0))
+                # elif num == 2:
+                #     text = font.render(str(num), True, (192, 192, 192))
+                # elif num == 3:
+                #     text = font.render(str(num), True, (80, 50, 20))
+                # else:
                 text = font.render(str(num), True, black)
             else:
+
+                # if num == 1:
+                #     text = font.render(str(value), True, (255, 215, 0))
+                # elif num == 2:
+                #     text = font.render(str(value), True, (192, 192, 192))
+                # elif num == 3:
+                #     text = font.render(str(value), True, (80, 50, 20))
+                # else:
                 text = font.render(str(value), True, black)
+
             if _x == 20:
                 WIN.blit(text, (_x, _y))
             else:
@@ -237,6 +255,7 @@ while run:
     draw_element_with_background(white, app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(),
                                                    0.02 * WIN.get_height()))
     drop_down, level_drop_down, play_button, exit_button, first_answer, mode_button = position_update()
+
     render_dataframe(load_df("test.xlsx"))
 
     for event in pygame.event.get():
@@ -281,10 +300,6 @@ while run:
 
     pygame.display.flip()
 
-# print("aaaaaa: " + nick)
-#
-# export_list(values_list, 'values_409_list.pickle')
-
 # with open('lista_indeksow_poprawiona.txt', 'r') as file:
 #     # Odczytaj zawartość pliku
 #     lista_indeksow = [linia.strip() for linia in file.readlines()]
@@ -306,94 +321,67 @@ while run:
 # with open('lista_powiatow_poprawiona.txt', 'w') as file:
 #     file.writelines('\n'.join(values_list))
 
-# dicts_pickle_2 = import_list('dicts.pickle2')
-# for dict in dicts_pickle_2:
+# for dict in dicts_pickle_3:
 #     if 'BS' in dict:
 #         dict['BS'] = 'Suwałki(miasto)'
 #     if 'BSU' in dict:
-#         dict['BS'] = 'Suwałki(powiat)'
-#     if 'DX' in dict:
-#         dict['DX'] = 'Wrocław(miasto 2)'
-#     if 'ED' in dict:
-#         dict['ED'] = 'Łódź(miasto 2)'
-#     if 'ESK' in dict:
-#         dict['ESK'] = 'Skierniewice(powiat)'
-#     if 'ES' in dict:
-#         dict['ES'] = 'Skierniewice(miasto)'
-#     if 'GWO' in dict:
-#         dict['GWO'] = 'Wejherowo(powiat 2)'
-#     if 'GWE' in dict:
-#         dict['GWE'] = 'Wejherowo(powiat)'
-#     if 'KBC' in dict:
-#         dict['KBC'] = 'Bochnia(powiat)'
-#     if 'KBA' in dict:
-#         dict['KBA'] = 'Bochnia(powiat 2)'
-#     if 'KK' in dict:
-#         dict['KK'] = 'Kraków(miasto 2)'
-#     if 'PY' in dict:
-#         dict['PY'] = 'Poznań(miasto 2)'
-#     if 'ZZ' in dict:
-#         dict['ZZ'] = 'Szczecin(miasto 2)'
-#     if 'ZS' in dict:
-#         dict['ZS'] = 'Szczecin(miasto)'
-# export_list(dicts_pickle_2, 'dicts.pickle3')
-# yyy = {}
-# xxx = import_list('dicts.pickle3')
-# for dict_ in xxx:
-#     yyy.update(dict_)
-# export_list(yyy, 'testy.pickle')
+#         dict['BSU'] = 'Suwałki(powiat)'
 
 
-# loaded_dicts = import_list('dicts.pickle3')
-# key_list = []
+# # Aktualizator macierzy
 #
+#
+# # dicts_pickle_3 = import_list('dicts.pickle3')
+# #
+# # for dict in dicts_pickle_3:
+# #     if 'CG' in dict:
+# #         dict['CG'] = 'Grudziądz(miasto)'
+# # export_list(dicts_pickle_3, 'dicts.pickle3')
+#
+# loaded_dicts = import_list('dicts.pickle3')
+# values_list = []
+# key_list = []
+# # #
 # for voivodeship in range(len(loaded_dicts)):
 #     for key, value in loaded_dicts[voivodeship].items():
 #         values_list.append(value)
 #         key_list.append(key)
 #
-# export_list(key_list, '409_indices.pickle')
-# export_list(values_list, '409_values.pickle')
-#
-#
 # _matrix = np.zeros((len(values_list), len(values_list)))
 #
-# # import_list('409_values.pickle')
-#
+# export_list(key_list, '409_indices.pickle')
+# export_list(values_list, '409_values.pickle')
+# # #
+# # #
+# # #
+# # # import_list('409_values.pickle')
+# #
 # for num, element in enumerate(values_list):
 #     for num_2, _element in enumerate(values_list):
 #
-#         for i in range(3):
-#             if element[:i] == _element[:i]:
-#                 _matrix[num][num_2] += i
+#         for i in range(2):
+#             if element[i] == _element[i]:
+#                 _matrix[num][num_2] += 1
+# #
+# # # ---------------------dla extreme---------------------
+# for num, element in enumerate(values_list):
+#     for num_2, _element in enumerate(values_list):
+#
+#         for i in range(2):
+#             if element[i] == _element[i]:
+#                 _matrix[num][num_2] += 3 - i
 # #
 # df = pd.DataFrame(_matrix, columns=values_list, index=values_list)
-# # df.to_csv('extreme.csv')
 # df.to_pickle('extreme_matrix.pickle')
-#
-
-
+# # df.to_csv('extreme.csv')
+# #
 #
 # levenshtein_matrix = np.zeros((len(values_list), len(values_list)))
-#
+# #
 # for num, element in enumerate(values_list):
 #     for num_2, _element in enumerate(values_list):
 #         levenshtein_matrix[num][num_2] = Levenshtein.distance(element, _element)
 #
 # df = pd.DataFrame(levenshtein_matrix, columns=values_list, index=values_list)
-
-# df.to_pickle('levenshtein_matrix.pickle')
-
-
-# print(levenshtein_matrix)
-
-# print(loaded_dicts['Podlaskie'])
-# print(voivodeship_options[0])
-# print(voivodeship_options.index('Podlaskie'))
 #
-# print(Voivodeship.get_random_question())
-# df = pd.DataFrame(levenshtein_matrix)
-# for i in range(409):
-#     for j in range(409):
-#         if j>i:
-#             df.iat[i, j] = ''
+# df.to_pickle('levenshtein_matrix.pickle')

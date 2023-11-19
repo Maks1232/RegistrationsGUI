@@ -159,7 +159,7 @@ if __name__ == "__main__":
         WIN.blit(app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(), 0.02 * WIN.get_height()))
         drop_down, level_drop_down, play_button, exit_button, first_answer, mode_button = position_update()
 
-        render_dataframe(load_df("test.xlsx"))
+        render_dataframe(load_df("ranking.xlsx"))
 
         for event in pygame.event.get():
             if not nick_executed:

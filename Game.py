@@ -154,7 +154,7 @@ class Game:
             self.notification()
             self.update_question_info()
             self.update_score_info()
-            self.save_score("test.xlsx")
+            self.save_score("ranking.xlsx")
             self._play = False
 
     def update_answer_blocks(self):

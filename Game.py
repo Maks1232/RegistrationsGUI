@@ -3,7 +3,7 @@ from AnswerRect import *
 from Voivodeship import *
 from tkinter import messagebox
 
-# Kolory
+# Colors
 white = (255, 255, 255)
 aqua = (0, 255, 255)
 red = (255, 0, 0)
@@ -27,15 +27,24 @@ def multiplier(voivodeship, level, voivodeship_base):
 
     level_base = ["Easy", "Medium", "Hard", "Extreme"]
 
-    multipliers = {
-        (voivodeship_base[-1], level_base[-1]): (2, 3),
-        (voivodeship_base[-1], level_base[-2]): (2, 2),
-        (voivodeship_base[-1], level_base[0]): (0, 1),
-        (not voivodeship_base[-1], level_base[-1]): (1, 2),
-        (not voivodeship_base[-1], level_base[-2]): (0, 1)
-    }
+    a = 0
 
-    a, b = multipliers.get((voivodeship, level), (1, 0))
+    if voivodeship == voivodeship_base[-1]:
+        b = 3
+        if level == level_base[-1]:
+            a = 2
+        elif level == level_base[-2]:
+            a = 1
+        elif level == level_base[-4]:
+            a = -1
+    else:
+        b = 1
+        if level == level_base[-1]:
+            a = 3
+        elif level == level_base[-2]:
+            a = 2
+        elif level == level_base[-3]:
+            a = 1
 
     return a + b
 
@@ -209,9 +218,15 @@ class Game:
 
     @staticmethod
     def exit_execute():
-        if messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść do menu?") == "no":
+        if messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść") == "no":
             return True
 
     @staticmethod
     def notification():
-        messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść do menu?")
+        messagebox.showinfo("Brawo!", "Wszystkie indeksy zostały już wylosowane!")
+
+    @staticmethod
+    def config_notification():
+        messagebox.showinfo("Zmień konfigurację",
+                            'Dla obszaru wszystkich województw rozgrywka zaczyna się od poziomu medium '
+                            '\n\nWybierz odpowiedni poziom trudności!')

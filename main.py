@@ -1,81 +1,7 @@
-import sys
-import time
-import pandas as pd
-import pygame
-import os
-import pickle
-import numpy as np
-import Levenshtein
-from Voivodeship import Voivodeship
-import tkinter as tk
-from tkinter import messagebox
-import openpyxl
 from itertools import islice
-import pygame_gui
 import pygame.freetype
 from pygame.locals import *
-from Game import *
-
-pygame.init()
-pygame.font.init()
-pygame.mixer.init()
-
-# Window creation
-WIN = pygame.display.set_mode((1400, 800), pygame.RESIZABLE)
-pygame.display.set_caption("Registration Plates Quiz")
-
-# Kolory
-white = (255, 255, 255)
-aqua = (0, 255, 255)
-red = (255, 0, 0)
-grey = (150, 150, 150)
-dark_grey = (100, 100, 100)
-green = (60, 179, 113)
-black = (0, 0, 0)
-dark_blue = (66, 0, 249)
-bright_blue = (175, 238, 238)
-
-# Font
-font = pygame.font.Font(None, 32)
-font_2 = pygame.font.Font(None, 72)
-
-# Variables
-play = False
-full_list = False
-full_level_list = False
-active_option = "Wybierz województwo"
-active_level_option = "Wybierz poziom"
-tribes = {0: 'Powtarzanie', 1: 'Bez powtórzeń'}
-mode = 0
-score = 0
-nickname = "Unknown"
-nick_executed = False
-clock = pygame.time.Clock()
-UI_REFRESH_RATE = clock.tick(60) / 10000
-run = True
-
-# Loading images
-app_logo = pygame.image.load(os.path.join('Images', 'title_v1.png'))
-registration_template = pygame.image.load(os.path.join('Images', 'registration_template.png'))
-
-
-# Export list to the file
-def export_list(voivodeships, file_name):
-    with open(file_name, 'wb') as file:
-        pickle.dump(voivodeships, file)
-
-
-# Import list from the file
-def import_list(file_name):
-    with open(file_name, 'rb') as file:
-        imported_list = pickle.load(file)
-    return imported_list
-
-
-# Opcje pola rozwijanego
-loaded_dicts = import_list('dicts.pickle3')
-voivodeship_options = import_list(file_name='voivodeship_options')
-level_options = ["Easy", "Medium", "Hard", "Extreme"]
+from config import *
 
 
 def position_update():
@@ -112,11 +38,6 @@ def position_update():
     return _drop_down, _level_drop_down, _play_button, _exit_button, _first_answer, _mode_button
 
 
-def draw_element_with_background(color, element, position):
-    WIN.fill(color)
-    WIN.blit(element, position)
-
-
 def draw_rect(position, text, button_color):
     pygame.draw.rect(WIN, button_color, position)  # draw rectangular
     pygame.draw.rect(WIN, white, position, 2)  # draw the frame
@@ -124,6 +45,7 @@ def draw_rect(position, text, button_color):
 
 
 def write_text(text, location):
+    font = pygame.font.Font(None, 32)
     text_surface = font.render(text, True, white)
     text_location = text_surface.get_rect(center=location)
     WIN.blit(text_surface, text_location)
@@ -141,18 +63,11 @@ def draw_list(position, options, active_list, active_choice):
             write_text(option, (position[0] + position.width // 2, y + position.height // 2))
 
 
-def show_message(title, message):
-    messagebox.showinfo(title, message)
-
-
-def exit_execute(_run, stage=0):
-    message = "Czy na pewno chcesz wyjść z aplikacji?" if stage == 0 else "Czy na pewno chcesz wyjść do menu?"
-    _result = messagebox.askquestion("Potwierdzenie", message)
-
-    return _run and _result != "yes"
-
-
 def render_dataframe(df):
+
+    font = pygame.font.Font(None, 32)
+    font_2 = pygame.font.Font(None, 72)
+
     _x, _y = WIN.get_width() / 10, WIN.get_height() / 2.8
     cell_width, cell_height = WIN.get_width() / 5, WIN.get_height() / 30
 
@@ -170,24 +85,8 @@ def render_dataframe(df):
         _x = 20
         for value in row:
             if isinstance(value, int) and value is not row.iloc[-1]:
-
-                # if num == 1:
-                #     text = font.render(str(num), True, (255, 215, 0))
-                # elif num == 2:
-                #     text = font.render(str(num), True, (192, 192, 192))
-                # elif num == 3:
-                #     text = font.render(str(num), True, (80, 50, 20))
-                # else:
                 text = font.render(str(num), True, black)
             else:
-
-                # if num == 1:
-                #     text = font.render(str(value), True, (255, 215, 0))
-                # elif num == 2:
-                #     text = font.render(str(value), True, (192, 192, 192))
-                # elif num == 3:
-                #     text = font.render(str(value), True, (80, 50, 20))
-                # else:
                 text = font.render(str(value), True, black)
 
             if _x == 20:
@@ -209,6 +108,9 @@ def nick_input():
 
 
 def get_user_name():
+
+    font = pygame.font.Font(None, 32)
+
     text = font.render("Wprowadź nazwę użytkownika i wciśnij klawisz ENTER:", True, dark_blue)
     _run = True
 
@@ -249,139 +151,57 @@ def handle_drop_down_event(_drop_down, _options, _event, _full_list_flag, _activ
     return _active_option, _full_list_flag
 
 
-while run:
+if __name__ == "__main__":
 
-    clock.tick(60)
-    draw_element_with_background(white, app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(),
-                                                   0.02 * WIN.get_height()))
-    drop_down, level_drop_down, play_button, exit_button, first_answer, mode_button = position_update()
+    while run:
 
-    render_dataframe(load_df("test.xlsx"))
+        WIN.fill(white)
+        WIN.blit(app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(), 0.02 * WIN.get_height()))
+        drop_down, level_drop_down, play_button, exit_button, first_answer, mode_button = position_update()
 
-    for event in pygame.event.get():
-        if not nick_executed:
-            nickname = get_user_name()
-            nick_executed = True
-        if event.type == pygame.QUIT:
-            run = exit_execute(run)
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                run = exit_execute(run)
-        elif event.type == VIDEORESIZE:
-            WIN = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if drop_down.collidepoint(event.pos):
-                full_list = not full_list
-                full_level_list = False
-            elif exit_button.collidepoint(event.pos):
-                run = exit_execute(run)
-            elif level_drop_down.collidepoint(event.pos):
-                full_level_list = not full_level_list
-                full_list = False
-            elif mode_button.collidepoint(event.pos):
-                mode = not mode
-            elif full_list:
-                active_option, full_list = handle_drop_down_event(drop_down, voivodeship_options, event, full_list,
-                                                                  active_option)
-            elif full_level_list:
-                active_level_option, full_level_list = handle_drop_down_event(level_drop_down, level_options, event,
-                                                                              full_level_list, active_level_option)
-            if play_button.collidepoint(event.pos):
-                if not active_option == "Wybierz województwo" and not active_level_option == "Wybierz poziom":
-                    game_instance = Game(WIN, active_option, active_level_option, mode, nickname)
-                    game_instance.run()
+        render_dataframe(load_df("test.xlsx"))
 
-    draw_rect(mode_button, tribes[mode], dark_grey if mode != 0 else grey)
-    draw_list(drop_down, voivodeship_options, active_list=full_list, active_choice=active_option)
-    draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)
-    draw_rect(exit_button, "Wyjdź", grey)
-    draw_rect(play_button, "Zagraj!",
-              green if active_option != 'Wybierz województwo' and active_level_option != 'Wybierz poziom' else grey)
+        for event in pygame.event.get():
+            if not nick_executed:
+                nickname = get_user_name()
+                nick_executed = True
+            if event.type == pygame.QUIT:
+                run = Game.exit_execute()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    run = Game.exit_execute()
+            elif event.type == VIDEORESIZE:
+                WIN = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if drop_down.collidepoint(event.pos):
+                    full_list = not full_list
+                    full_level_list = False
+                elif exit_button.collidepoint(event.pos):
+                    run = Game.exit_execute()
+                elif level_drop_down.collidepoint(event.pos):
+                    full_level_list = not full_level_list
+                    full_list = False
+                elif mode_button.collidepoint(event.pos):
+                    mode = not mode
+                elif full_list:
+                    active_option, full_list = handle_drop_down_event(drop_down, voivodeship_options, event, full_list,
+                                                                      active_option)
+                elif full_level_list:
+                    active_level_option, full_level_list = handle_drop_down_event(level_drop_down, level_options, event,
+                                                                                  full_level_list, active_level_option)
+                if play_button.collidepoint(event.pos):
+                    if not active_option == "Wybierz województwo" and not active_level_option == "Wybierz poziom":
+                        if active_option == voivodeship_options[-1] and active_level_option == level_options[0]:
+                            Game.config_notification()
+                        else:
+                            game_instance = Game(WIN, active_option, active_level_option, mode, nickname)
+                            game_instance.run()
 
-    pygame.display.flip()
+        draw_rect(mode_button, tribes[mode], dark_grey if mode != 0 else grey)
+        draw_list(drop_down, voivodeship_options, active_list=full_list, active_choice=active_option)
+        draw_list(level_drop_down, level_options, active_list=full_level_list, active_choice=active_level_option)
+        draw_rect(exit_button, "Wyjdź", grey)
+        draw_rect(play_button, "Zagraj!",
+                  green if active_option != 'Wybierz województwo' and active_level_option != 'Wybierz poziom' else grey)
 
-# with open('lista_indeksow_poprawiona.txt', 'r') as file:
-#     # Odczytaj zawartość pliku
-#     lista_indeksow = [linia.strip() for linia in file.readlines()]
-#
-# with open('lista_powiatow_poprawiona.txt', 'r') as file:
-#     # Odczytaj zawartość pliku
-#     values_list = [linia.strip() for linia in file.readlines()]
-#
-# print(lista_indeksow)
-# print(values_list)
-#
-
-
-# #zapis stringów do pliku w kolumnach
-# with open('lista_indeksow_poprawiona.txt', 'w') as file:
-#     file.writelines('\n'.join(key_list))
-#
-# #zapis stringów do pliku w kolumnach
-# with open('lista_powiatow_poprawiona.txt', 'w') as file:
-#     file.writelines('\n'.join(values_list))
-
-# for dict in dicts_pickle_3:
-#     if 'BS' in dict:
-#         dict['BS'] = 'Suwałki(miasto)'
-#     if 'BSU' in dict:
-#         dict['BSU'] = 'Suwałki(powiat)'
-
-
-# # Aktualizator macierzy
-#
-#
-# # dicts_pickle_3 = import_list('dicts.pickle3')
-# #
-# # for dict in dicts_pickle_3:
-# #     if 'CG' in dict:
-# #         dict['CG'] = 'Grudziądz(miasto)'
-# # export_list(dicts_pickle_3, 'dicts.pickle3')
-#
-# loaded_dicts = import_list('dicts.pickle3')
-# values_list = []
-# key_list = []
-# # #
-# for voivodeship in range(len(loaded_dicts)):
-#     for key, value in loaded_dicts[voivodeship].items():
-#         values_list.append(value)
-#         key_list.append(key)
-#
-# _matrix = np.zeros((len(values_list), len(values_list)))
-#
-# export_list(key_list, '409_indices.pickle')
-# export_list(values_list, '409_values.pickle')
-# # #
-# # #
-# # #
-# # # import_list('409_values.pickle')
-# #
-# for num, element in enumerate(values_list):
-#     for num_2, _element in enumerate(values_list):
-#
-#         for i in range(2):
-#             if element[i] == _element[i]:
-#                 _matrix[num][num_2] += 1
-# #
-# # # ---------------------dla extreme---------------------
-# for num, element in enumerate(values_list):
-#     for num_2, _element in enumerate(values_list):
-#
-#         for i in range(2):
-#             if element[i] == _element[i]:
-#                 _matrix[num][num_2] += 3 - i
-# #
-# df = pd.DataFrame(_matrix, columns=values_list, index=values_list)
-# df.to_pickle('extreme_matrix.pickle')
-# # df.to_csv('extreme.csv')
-# #
-#
-# levenshtein_matrix = np.zeros((len(values_list), len(values_list)))
-# #
-# for num, element in enumerate(values_list):
-#     for num_2, _element in enumerate(values_list):
-#         levenshtein_matrix[num][num_2] = Levenshtein.distance(element, _element)
-#
-# df = pd.DataFrame(levenshtein_matrix, columns=values_list, index=values_list)
-#
-# df.to_pickle('levenshtein_matrix.pickle')
+        pygame.display.flip()

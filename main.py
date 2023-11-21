@@ -52,13 +52,16 @@ def write_text(text, location):
 
 
 def draw_list(position, options, active_list, active_choice):
-    draw_rect(position, active_choice, green)
+    draw_rect(position, active_choice, active_green if active_list else green)
 
     if active_list:
-
         for i, option in enumerate(options):
             y = position[1] + (i + 1) * position.height
-            pygame.draw.rect(WIN, grey, (position[0], y, position.width, position.height))
+
+            field = pygame.Rect(position.x, y, position.width, position.height)
+
+            pygame.draw.rect(WIN, dark_grey if field.collidepoint(event.pos) else grey,
+                             (position[0], y, position.width, position.height))
             pygame.draw.rect(WIN, white, (position[0], y, position.width, position.height), 2)
             write_text(option, (position[0] + position.width // 2, y + position.height // 2))
 

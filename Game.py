@@ -218,7 +218,7 @@ class Game:
 
     @staticmethod
     def exit_execute():
-        if messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść") == "no":
+        if messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść?") == "no":
             return True
 
     @staticmethod

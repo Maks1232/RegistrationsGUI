@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/lista_powiatow.txt" charset="windows-1250" />
     <file url="file://$PROJECT_DIR$/lista_powiatow_poprawiona.txt" charset="windows-1250" />
     <file url="file://$PROJECT_DIR$/values_409_list.pickle" charset="windows-1250" />
+    <file url="file://$PROJECT_DIR$/../RegPlatesGUI/lista_powiatow_poprawiona.txt" charset="windows-1250" />
   </component>
 </project>

@@ -206,8 +206,11 @@ class Game:
 
     def handle_answer_click(self, clicked_block):
         for block in self.answer_blocks:
-            if block.button == clicked_block and block.text == self.county:
-                self._score += self.multiplier
+            if block.button == clicked_block:
+                if block.text == self.county:
+                    self._score += self.multiplier
+                elif self.mode == 0:
+                    self._score = 0
         self.questions_left += -1
 
     @staticmethod

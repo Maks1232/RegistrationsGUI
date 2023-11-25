@@ -1,5 +1,6 @@
 from Game import *
 
+# PyGame initialization
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()

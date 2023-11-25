@@ -25,17 +25,12 @@ def position_update():
                                0.25 * WIN.get_height(),
                                0.04 * WIN.get_height())
 
-    _first_answer = pygame.Rect(0.1 * WIN.get_width(),
-                                0.32 * WIN.get_height(),
-                                0.5 * WIN.get_height(),
-                                0.1 * WIN.get_height())
-
     _mode_button = pygame.Rect(WIN.get_width() / 2 - 0.0625 * WIN.get_width(),
                                20 + 1.1 * app_logo.get_height(),
                                0.125 * WIN.get_width(),
                                0.04 * WIN.get_height())
 
-    return _drop_down, _level_drop_down, _play_button, _exit_button, _first_answer, _mode_button
+    return _drop_down, _level_drop_down, _play_button, _exit_button, _mode_button
 
 
 def draw_rect(position, text, button_color):
@@ -60,8 +55,11 @@ def draw_list(position, options, active_list, active_choice):
 
             field = pygame.Rect(position.x, y, position.width, position.height)
 
-            pygame.draw.rect(WIN, dark_grey if field.collidepoint(event.pos) else grey,
-                             (position[0], y, position.width, position.height))
+            if field.collidepoint(event.pos):
+                pygame.draw.rect(WIN, dark_grey, (position[0], y, position.width, position.height))
+            else:
+                pygame.draw.rect(WIN, grey, (position[0], y, position.width, position.height))
+
             pygame.draw.rect(WIN, white, (position[0], y, position.width, position.height), 2)
             write_text(option, (position[0] + position.width // 2, y + position.height // 2))
 
@@ -158,9 +156,9 @@ if __name__ == "__main__":
 
     while run:
 
+        drop_down, level_drop_down, play_button, exit_button, mode_button = position_update()
         WIN.fill(white)
         WIN.blit(app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(), 0.02 * WIN.get_height()))
-        drop_down, level_drop_down, play_button, exit_button, first_answer, mode_button = position_update()
 
         render_dataframe(load_df("ranking.xlsx"))
 
@@ -198,7 +196,6 @@ if __name__ == "__main__":
                             Game.config_notification()
                         else:
                             game_instance = Game(WIN, active_option, active_level_option, mode, nickname)
-                            game_instance.run()
 
         draw_rect(mode_button, tribes[mode], dark_grey if mode != 0 else grey)
         draw_list(drop_down, voivodeship_options, active_list=full_list, active_choice=active_option)

@@ -101,9 +101,9 @@ class Game:
 
     def run(self):
         clock = pygame.time.Clock()
+        time_delta = clock.tick(60) / 1000.0
 
         while self._play:
-            time_delta = clock.tick(60) / 1000.0
 
             for event in pygame.event.get():
 

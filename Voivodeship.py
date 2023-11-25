@@ -95,7 +95,7 @@ class Voivodeship:
         iterator = 0
 
         while len(answers) < 4:
-            if self.voivodeship == self.voivodeship_options[-1] and (self.level == "Medium" or self.level == 'Easy'):
+            if self.voivodeship == self.voivodeship_options[-1] and self.level == "Medium":
                 random_answer = random.choice(list(self.merged_dicts.values()))
             elif self.level == "Hard" or self.level == 'Extreme':
                 random_answer = col.index[iterator]

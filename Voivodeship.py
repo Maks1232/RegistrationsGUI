@@ -15,6 +15,47 @@ def import_df(file_name):
 
 
 class Voivodeship:
+    """
+    A class used to get random registration plate index, correct city name, and four element list with obtained answers
+
+    Attributes
+    ----------
+    voivodeship : str
+        an attribute that determines range of available registration plates to be drawn
+    level : str
+        an attribute that determines difficulty level
+    mode : int
+        an attribute that determines game mode repetitive or non-repetitive
+    already_selected : dictionary
+        a dictionary with already used keys and values in particular object instance
+    voivodeship_options : list
+        a list of strings representing the available voivodeship options
+    loaded_dicts : list
+        a list of dictionaries including set of all indices and city names as keys and values
+    merged_dicts: dictionary
+        a dictionary including all dictionaries from loaded dictionaries merged in one
+    levenshtein_matrix: DataFrame
+        a matrix including Levenshtein distances between city names
+    extreme_matrix: DataFrame
+        a matrix including own metric similarity values
+    all: int
+        a value storing number of all available registration plates due to current parameter configuration
+
+    Methods
+    -------
+    random_plate()
+        a method being rule set for registration plate index selection
+    dictionary_merge()
+        a method which defines merged_dicts attribute content
+    get_random_question()
+        a method which returns registration plate index with repetitions or no repetitions drawn from data set in which
+        content is conditioned by parameters provided in __init__ method arguments
+    generate_answers(correct_answer)
+        a method which returns four element, shuffled list with answers without repetitions drawn from data set in which
+        content is conditioned by parameters provided in __init__ method arguments
+    ask_question()
+        a method which returns registration plate, belonged city name and four element list with th drawn answers
+    """
     def __init__(self, voivodeship, level, mode=1):
         self.voivodeship = voivodeship
         self.level = level
@@ -108,6 +149,7 @@ class Voivodeship:
                 answers.append(random_answer)
 
         random.shuffle(answers)
+
         return answers
 
     def ask_question(self):

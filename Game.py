@@ -50,6 +50,78 @@ def multiplier(voivodeship, level, voivodeship_base):
 
 
 class Game:
+    """
+    A class used to manage game session view including interactive answer blocks handling and information displaying
+
+    Attributes
+    ----------
+    screen : object
+        a PyGame object representing application window
+    active_option : str
+        an attribute which store active voivodeship name selected by user
+    active_level_option : str
+        an attribute which store active difficulty level selected by user
+    mode : int
+        an attribute that determines game mode repetitive or non-repetitive
+    nickname : str
+        a string representing username
+    _play : bool
+        an attribute for program loop control
+    _score: int
+        a value representing current number of collected game points
+    manager: object
+        a pygame_gui.UIManager object for help answer block control
+    voivodeship: object
+        a custom voivodeship class object instance enabling game session handling
+    registration: str
+        a registration plate index obtained with voivodeship class mechanisms
+    county: str
+        a city name belonged to registration plate index obtained with voivodeship class mechanisms
+    answers: list
+        a list of obtained with voivodeship class mechanisms answers conditioned by registration attribute value
+    questions_left: int
+        a number of remaining registration plate indices to be drawn in current game session
+    answer_blocks: object
+        a view element used for represent interactive rectangular to show city name and spot the click action
+    multiplier: int
+        a number to be recognized as score multiplier conditioned by arguments sent during game class object instance
+        creation
+    score_percentage: int
+        a _score expressed as value in percentage format
+    exit_button: object
+        a view element used for represent interactive rectangular to make exit action available
+    Methods
+    -------
+    run()
+        a method to make game session algorithm automated
+    save_score(file)
+        a method for doing score save to the Excel file
+    next_question()
+        a method triggering next question display
+    update_answer_blocks()
+        a method used for update answer block content after next_question method triggered
+    draw_elements(delta)
+        a method used for drawing each game session view element on the screen
+    update_question_info(delta)
+        a method used for update number of displayed left registration plate indices value in non-repetitive mode
+    update_score_info(delta)
+        a method used for update number of displayed score value in game session
+    handle_answer_click(clicked_block)
+        a method used for handle spotted answer block click
+    reset()
+        a method used for spot and handle reset procedure need
+    exit_execute()
+        a method used for spot and handle exit procedure if needed
+    notification()
+        a method used for spot and display user notification if needed
+    config_notification()
+        a method used for spot and display user notification different than previous if needed
+    Raises
+    -------
+    IndexError
+        If method returns that exception it is a signal that the registration plate indices pool is empty
+
+    """
     def __init__(self, screen, active_option, active_level_option, mode, nickname):
         self.screen = screen
         self.active_option = active_option

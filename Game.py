@@ -17,38 +17,6 @@ bright_blue = (175, 238, 238)
 reg_template = pygame.image.load(os.path.join('Images', 'registration_template.png'))
 
 
-def load_df(name):
-    df = pd.read_excel(name)
-    df.sort_values(by=df.columns[-1], ascending=False, inplace=True)
-    return df
-
-
-def multiplier(voivodeship, level, voivodeship_base):
-
-    level_base = ["Easy", "Medium", "Hard", "Extreme"]
-
-    a = 0
-
-    if voivodeship == voivodeship_base[-1]:
-        b = 3
-        if level == level_base[-1]:
-            a = 2
-        elif level == level_base[-2]:
-            a = 1
-        elif level == level_base[-4]:
-            a = -1
-    else:
-        b = 1
-        if level == level_base[-1]:
-            a = 3
-        elif level == level_base[-2]:
-            a = 2
-        elif level == level_base[-3]:
-            a = 1
-
-    return a + b
-
-
 class Game:
     """
     A class used to manage game session view including interactive answer blocks handling and information displaying
@@ -94,6 +62,9 @@ class Game:
     -------
     run()
         a method to make game session algorithm automated
+    multiplier()
+        a method used to calculate appropriate score multiplier conditioned by arguments sent during game class object
+        instance creation
     save_score(file)
         a method for doing score save to the Excel file
     next_question()
@@ -156,7 +127,7 @@ class Game:
                        0.1 * screen.get_height(),
                        self.answers[3], self.manager),
         ]
-        self.multiplier = multiplier(self.active_option, self.active_level_option, self.voivodeship.voivodeship_options)
+        self.multiplier = self.multiplier()
         self.score_percentage = round(100 * self._score / (self.multiplier * self.voivodeship.all))
 
         self.exit_button = pygame_gui.elements.UIButton(
@@ -205,8 +176,32 @@ class Game:
 
             pygame.display.flip()
 
+    def multiplier(self):
+        level_base = ["Easy", "Medium", "Hard", "Extreme"]
+        a = 0
+
+        if self.active_option == self.voivodeship.voivodeship_options[-1]:
+            b = 3
+            if self.active_level_option == level_base[-1]:
+                a = 2
+            elif self.active_level_option == level_base[-2]:
+                a = 1
+            elif self.active_level_option == level_base[-4]:
+                a = -1
+        else:
+            b = 1
+            if self.active_level_option == level_base[-1]:
+                a = 3
+            elif self.active_level_option == level_base[-2]:
+                a = 2
+            elif self.active_level_option == level_base[-3]:
+                a = 1
+
+        return a + b
+
     def save_score(self, file):
-        df = load_df(file)
+        df = pd.read_excel(file)
+        df.sort_values(by=df.columns[-1], ascending=False, inplace=True)
 
         updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
         updater.at[0, 'Nazwa'] = self.nickname

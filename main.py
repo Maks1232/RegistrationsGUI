@@ -3,6 +3,38 @@ import pygame.freetype
 from pygame.locals import *
 from config import *
 
+"""
+Configuration file with pygame initialization, color definitions, image imports and variable set
+
+Functions
+----------
+load_df(file)
+    a function used to read excel file and put it into DataFrame collection sorted by last column (score points) 
+    descending
+position_update()
+    a function used to make start window elements resizable
+draw_rect(position, text, button_color)
+    a function used to draw rectangular with frame and filled out with the text in specific position
+write_text(text, location)
+    a function used to write and blit the text in specific position
+draw_list(position, options, active_list, active_choice)
+    a function used to draw dropdown list in specific position
+render_dataframe(df)
+    a function which render DataFrame collection content to be displayed in GUI
+nick_input()
+    a function used to initialization elements needed for getting user name function control   
+get_user_name()
+    a function used to manage getting user name view
+handle_drop_down_event(_drop_down, _options, _event, _full_list_flag, _active_option)
+    a function used to spot and execute dropdown list handling
+"""
+
+
+def load_df(file):
+    df = pd.read_excel(file)
+    df.sort_values(by=df.columns[-1], ascending=False, inplace=True)
+    return df
+
 
 def position_update():
     _drop_down = pygame.Rect(0.1 * WIN.get_width(),
@@ -111,7 +143,6 @@ def nick_input():
 def get_user_name():
 
     font = pygame.font.Font(None, 32)
-
     text = font.render("Wprowadź nazwę użytkownika i wciśnij klawisz ENTER:", True, dark_blue)
     _run = True
 
@@ -130,7 +161,7 @@ def get_user_name():
 
             manager.process_events(_event)
 
-        manager.update(UI_REFRESH_RATE)
+        manager.update(clock.tick(60) / 10000)
 
         WIN.fill("white")
         WIN.blit(text, (WIN.get_width() / 2 - text.get_width() / 2,

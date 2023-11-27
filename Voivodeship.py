@@ -9,11 +9,6 @@ def import_list(file_name):
     return imported_list
 
 
-def import_df(file_name):
-    df = pd.read_pickle(file_name)
-    return df
-
-
 class Voivodeship:
     """
     A class used to get random registration plate index, correct city name, and four element list with obtained answers
@@ -61,11 +56,11 @@ class Voivodeship:
         self.level = level
         self.mode = mode
         self.already_selected = {}
-        self.voivodeship_options = import_list(file_name='voivodeship_options')
+        self.voivodeship_options = import_list('voivodeship_options')
         self.loaded_dicts = import_list('dicts.pickle3')
         self.merged_dicts = self.dictionary_merge()
-        self.levenshtein_matrix = import_df(file_name='levenshtein_matrix.pickle')
-        self.extreme_matrix = import_df(file_name='extreme_matrix.pickle')
+        self.levenshtein_matrix = pd.read_pickle('levenshtein_matrix.pickle')
+        self.extreme_matrix = pd.read_pickle('extreme_matrix.pickle')
         if not self.voivodeship == self.voivodeship_options[-1]:
             self.all = len(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)])
         else:

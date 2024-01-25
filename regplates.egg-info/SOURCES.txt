@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+regplates.egg-info/PKG-INFO
+regplates.egg-info/SOURCES.txt
+regplates.egg-info/dependency_links.txt
+regplates.egg-info/entry_points.txt
+regplates.egg-info/requires.txt
+regplates.egg-info/top_level.txt

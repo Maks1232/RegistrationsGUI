@@ -1,2 +1,0 @@
-[console_scripts]
-xxxxxxxxxx = main:main_function

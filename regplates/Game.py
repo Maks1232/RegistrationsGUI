@@ -1,7 +1,11 @@
 import os
-from .AnswerRect import *
-from .Voivodeship import *
+from regplates.AnswerRect import AnswerRect
+from regplates.Voivodeship import Voivodeship
 from tkinter import messagebox
+import pygame
+import regplates
+import pygame_gui
+import pandas as pd
 
 # Colors
 white = (255, 255, 255)
@@ -15,7 +19,7 @@ dark_blue = (66, 0, 249)
 bright_blue = (175, 238, 238)
 
 dir_name = os.path.realpath("..")
-reg_template = pygame.image.load(os.path.join(dir_name + 'Images', 'registration_template.png'))
+reg_template = pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)),'Images', 'registration_template.png'))
 
 
 class Game:
@@ -222,7 +226,7 @@ class Game:
             self.notification()
             self.update_question_info()
             self.update_score_info()
-            self.save_score("ranking.xlsx")
+            self.save_score(os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)),"ranking.xlsx"))
             self._play = False
 
     def update_answer_blocks(self):

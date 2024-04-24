@@ -1,6 +1,0 @@
-pygame
-pygame_gui
-tkinter
-itertools
-pickle
-pandas

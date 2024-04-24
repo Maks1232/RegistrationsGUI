@@ -1,7 +1,6 @@
 from itertools import islice
-import pygame.freetype
-from pygame.locals import *
-from .config import *
+from regplates.config import *
+import pandas as pd
 
 """
 Configuration file with pygame initialization, color definitions, image imports and variable set
@@ -147,7 +146,7 @@ def get_user_name():
     while _run:
 
         for _event in pygame.event.get():
-            if _event.type == VIDEORESIZE:
+            if _event.type == pygame.VIDEORESIZE:
                 manager, frame, text_input = nick_input()
                 text_input.focus()
             elif _event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and _event.ui_object_id == '#main_text_entry':
@@ -179,12 +178,6 @@ def handle_drop_down_event(_drop_down, _options, _event, _full_list_flag, _activ
 
 
 def main_function():
-    # PyGame initialization
-    pygame.init()
-    pygame.font.init()
-    pygame.mixer.init()
-
-    # Window creation
     WIN = pygame.display.set_mode((1400, 800), pygame.RESIZABLE)
     pygame.display.set_caption("Registration Plates Quiz")
 
@@ -204,7 +197,7 @@ def main_function():
         WIN.fill(white)
         WIN.blit(app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(), 0.02 * WIN.get_height()))
 
-        render_dataframe(load_df("ranking.xlsx"))
+        render_dataframe(load_df(os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)),"ranking.xlsx")))
 
         for event in pygame.event.get():
             if not nick_executed:
@@ -215,7 +208,7 @@ def main_function():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = Game.exit_execute()
-            elif event.type == VIDEORESIZE:
+            elif event.type == pygame.VIDEORESIZE:
                 WIN = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if drop_down.collidepoint(event.pos):

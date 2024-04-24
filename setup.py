@@ -5,15 +5,15 @@ setup(
     version='0.6',
     packages=find_packages(),
     install_requires=[
-        'pygame',
         'pygame_gui',
-        'tkinter',
-        'itertools',
-        'pickle',
-        'pandas'
+        'pandas',
+        'openpyxl'
     ],
     entry_points={
         'console_scripts': [
-            'xxxxxxxxxx = main:main_function'],
+            'regplates = regplates.main:main_function'],
     },
+    package_data={
+        'regplates': ['Images/*.png', 'ranking.xlsx', 'voivodeship_options', 'dicts.pickle3', 'levenshtein_matrix.pickle', 'extreme_matrix.pickle', 'ranking.xlsx']
+    }
 )

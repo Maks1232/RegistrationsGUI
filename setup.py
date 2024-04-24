@@ -14,6 +14,6 @@ setup(
             'regplates = regplates.main:main_function'],
     },
     package_data={
-        'regplates': ['Images/*.png', 'ranking.xlsx', 'voivodeship_options', 'dicts.pickle3', 'levenshtein_matrix.pickle', 'extreme_matrix.pickle', 'ranking.xlsx']
+        'regplates': ['Resources/**']
     }
 )

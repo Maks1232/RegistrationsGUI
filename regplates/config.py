@@ -2,6 +2,7 @@ from regplates.Game import *
 from regplates.Voivodeship import import_list
 import pygame_gui
 import pygame
+from regplates.Utils import get_resource_path
 
 """
 Configuration file with pygame initialization, color definitions, image imports and variable set
@@ -78,9 +79,9 @@ tribes = {0: 'Powtarzanie', 1: 'Bez powtórzeń'}
 mode = 0
 
 # Loading images
-app_logo = pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)),'Images', 'title_v1.png'))
-registration_template = pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)),'Images', 'registration_template.png'))
+app_logo = pygame.image.load(get_resource_path('Images', 'title_v1.png'))
+registration_template = pygame.image.load(get_resource_path('Images', 'registration_template.png'))
 
 # Drop down options
-voivodeship_options = import_list(file_name=os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)),'voivodeship_options'))
+voivodeship_options = import_list(file_name=get_resource_path('voivodeship_options'))
 level_options = ["Easy", "Medium", "Hard", "Extreme"]

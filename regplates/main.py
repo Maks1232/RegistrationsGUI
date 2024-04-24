@@ -197,7 +197,7 @@ def main_function():
         WIN.fill(white)
         WIN.blit(app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(), 0.02 * WIN.get_height()))
 
-        render_dataframe(load_df(os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)),"ranking.xlsx")))
+        render_dataframe(load_df(get_resource_path('ranking.xlsx')))
 
         for event in pygame.event.get():
             if not nick_executed:

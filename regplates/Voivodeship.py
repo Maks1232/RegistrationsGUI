@@ -58,7 +58,7 @@ class Voivodeship:
         self.mode = mode
         self.already_selected = {}
         self.voivodeship_options = VOIVODESHIP_OPTIONS_LIST
-        with open(DICTS_JSON_PATH, encoding='utf8') as dicts_file:
+        with open(get_resource_path(DICTS_JSON_PATH), encoding='utf8') as dicts_file:
             self.loaded_dicts = json.load(dicts_file)
         self.merged_dicts = self.dictionary_merge()
         self.levenshtein_matrix = pd.read_csv(get_resource_path(LEVENSHTEIN_MATRIX_CSV_PATH), index_col=0, encoding='utf-8')

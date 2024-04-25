@@ -6,8 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'pygame_gui',
-        'pandas',
-        'openpyxl'
+        'pandas'
     ],
     entry_points={
         'console_scripts': [

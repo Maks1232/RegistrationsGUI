@@ -14,8 +14,6 @@ import pygame_gui
 import pandas as pd
 from tkinter import messagebox
 
-reg_template = pygame.image.load(get_resource_path(REG_TEMPLATE_IMAGE_PATH))
-
 
 class Game:
     """
@@ -253,9 +251,11 @@ class Game:
             self.answer_blocks[i].update_text(self.answers[i])
 
     def draw_elements(self, delta):
+
         self.screen.fill(Color.BRIGHT_BLUE.value)
 
         font = pygame.font.Font(None, 72)
+        reg_template = pygame.image.load(get_resource_path(REG_TEMPLATE_IMAGE_PATH))
         reg_surface = font.render(self.registration, True, Color.BLACK.value)
         font = pygame.font.Font(None, 40)
         user_information = font.render(

@@ -1,9 +1,9 @@
 if __package__:
-    from .Constants import Color, Level, RANKING_XLSX_PATH, APP_LOGO_IMAGE_PATH, VOIVODESHIP_OPTIONS_LIST
+    from .Constants import Color, Level, APP_LOGO_IMAGE_PATH, VOIVODESHIP_OPTIONS_LIST, RANKING_CSV_PATH
     from .Utils import get_resource_path
     from .Game import Game
 else:
-    from Constants import Color, Level, RANKING_XLSX_PATH, APP_LOGO_IMAGE_PATH, VOIVODESHIP_OPTIONS_LIST
+    from Constants import Color, Level, APP_LOGO_IMAGE_PATH, VOIVODESHIP_OPTIONS_LIST, RANKING_CSV_PATH
     from Utils import get_resource_path
     from Game import Game
 
@@ -38,12 +38,6 @@ get_user_name()
 handle_drop_down_event(_drop_down, _options, _event, _full_list_flag, _active_option)
     a function used to spot and execute dropdown list handling
 """
-
-
-def load_df(file):
-    df = pd.read_excel(file)
-    df.sort_values(by=df.columns[-1], ascending=False, inplace=True)
-    return df
 
 
 def position_update(WIN, app_logo):
@@ -185,7 +179,7 @@ def handle_drop_down_event(_drop_down, _options, _full_list_flag, _active_option
             if square_option.collidepoint(event.pos):
                 _active_option = _option
                 _full_list_flag = False
-    return _active_option, _full_list_flag
+    return _active_option.value if isinstance(_active_option, Enum) else _active_option, _full_list_flag
 
 
 def main_function():
@@ -221,7 +215,9 @@ def main_function():
         WIN.fill(Color.WHITE.value)
         WIN.blit(app_logo, (0.5 * WIN.get_width() - 0.5 * app_logo.get_width(), 0.02 * WIN.get_height()))
 
-        render_dataframe(load_df(get_resource_path(RANKING_XLSX_PATH)),WIN)
+        ranking_df = pd.read_csv(get_resource_path(RANKING_CSV_PATH))
+        ranking_df.sort_values(by=ranking_df.columns[-1], ascending=False, inplace=True)
+        render_dataframe(ranking_df,WIN)
 
         for event in pygame.event.get():
             if not nick_executed:

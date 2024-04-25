@@ -2,12 +2,12 @@ if __package__:
     from .AnswerRect import AnswerRect
     from .Voivodeship import Voivodeship
     from .Utils import get_resource_path
-    from .Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color, Level
+    from .Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_CSV_PATH, Color, Level
 else:
     from AnswerRect import AnswerRect
     from Voivodeship import Voivodeship
     from Utils import get_resource_path
-    from Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color, Level
+    from Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_CSV_PATH, Color, Level
 
 import pygame
 import pygame_gui
@@ -198,7 +198,7 @@ class Game:
         return a + b
 
     def save_score(self, file):
-        df = pd.read_excel(file)
+        df = pd.read_csv(file)
         df.sort_values(by=df.columns[-1], ascending=False, inplace=True)
 
         updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
@@ -209,7 +209,7 @@ class Game:
 
         df = pd.concat([updater, df], ignore_index=True)
         df = df.sort_values(by="Skuteczność[%]", ascending=False).head(50)
-        df.to_excel(file, columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
+        df.to_csv(file, columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
 
     def next_question(self):
         try:
@@ -219,7 +219,7 @@ class Game:
             self.notification()
             self.update_question_info()
             self.update_score_info()
-            self.save_score(get_resource_path(RANKING_XLSX_PATH))
+            self.save_score(get_resource_path(RANKING_CSV_PATH))
             self._play = False
 
     def update_answer_blocks(self):

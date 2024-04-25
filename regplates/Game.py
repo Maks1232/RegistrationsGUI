@@ -1,25 +1,20 @@
-import os
-from regplates.AnswerRect import AnswerRect
-from regplates.Voivodeship import Voivodeship
-from tkinter import messagebox
+if __package__:
+    from .AnswerRect import AnswerRect
+    from .Voivodeship import Voivodeship
+    from .Utils import get_resource_path
+    from .Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color
+else:
+    from AnswerRect import AnswerRect
+    from Voivodeship import Voivodeship
+    from Utils import get_resource_path
+    from Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color
+
 import pygame
-import regplates
 import pygame_gui
 import pandas as pd
-from regplates.Utils import get_resource_path
+from tkinter import messagebox
 
-# Colors
-white = (255, 255, 255)
-aqua = (0, 255, 255)
-red = (255, 0, 0)
-grey = (150, 150, 150)
-dark_grey = (100, 100, 100)
-green = (60, 179, 113)
-black = (0, 0, 0)
-dark_blue = (66, 0, 249)
-bright_blue = (175, 238, 238)
-
-reg_template = pygame.image.load(get_resource_path('Images', 'registration_template.png'))
+reg_template = pygame.image.load(get_resource_path(REG_TEMPLATE_IMAGE_PATH))
 
 class Game:
     """
@@ -225,7 +220,7 @@ class Game:
             self.notification()
             self.update_question_info()
             self.update_score_info()
-            self.save_score(get_resource_path("ranking.xlsx"))
+            self.save_score(get_resource_path(RANKING_XLSX_PATH))
             self._play = False
 
     def update_answer_blocks(self):
@@ -233,13 +228,13 @@ class Game:
             self.answer_blocks[i].update_text(self.answers[i])
 
     def draw_elements(self, delta):
-        self.screen.fill(bright_blue)
+        self.screen.fill(Color.BRIGHT_BLUE.value)
 
         font = pygame.font.Font(None, 72)
-        reg_surface = font.render(self.registration, True, black)
+        reg_surface = font.render(self.registration, True, Color.BLACK.value)
         font = pygame.font.Font(None, 40)
         user_information = font.render("Wybierz nazwę miejscowości, której odpowiada wyświetlany "
-                                       "powyżej indeks rejestracyjny:", True, dark_blue)
+                                       "powyżej indeks rejestracyjny:", True, Color.DARK_BLUE.value)
 
         self.screen.blit(reg_template, (0.5 * self.screen.get_width() - 0.5 * reg_template.get_width(),
                                         0.04 * self.screen.get_height()))
@@ -259,7 +254,7 @@ class Game:
     def update_question_info(self):
         if self.mode == 1:
             font = pygame.font.Font(None, 48)
-            text = font.render(f"Pozostało: {self.questions_left}", True, black)
+            text = font.render(f"Pozostało: {self.questions_left}", True, Color.BLACK.value)
             self.screen.blit(text, (0.1 * self.screen.get_width(),
                                     0.04 * self.screen.get_height() + 0.5 * text.get_height()))
 
@@ -268,9 +263,9 @@ class Game:
         font = pygame.font.Font(None, 48)
         if self.mode == 1:
             self.score_percentage = round(100 * self._score / (self.multiplier * (self.voivodeship.all - self.questions_left)))
-            text = font.render(f"Twój wynik: {self.score_percentage}%", True, black)
+            text = font.render(f"Twój wynik: {self.score_percentage}%", True, Color.BLACK.value)
         else:
-            text = font.render(f"Twój wynik: {self._score }", True, black)
+            text = font.render(f"Twój wynik: {self._score }", True, Color.BLACK.value)
 
         self.screen.blit(text, (0.9 * self.screen.get_width() - text.get_width(),
                                 0.04 * self.screen.get_height() + 0.5 * text.get_height()))

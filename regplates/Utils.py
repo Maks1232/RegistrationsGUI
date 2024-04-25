@@ -1,5 +1,12 @@
-import os 
-import regplates
+import os
+
 
 def get_resource_path(*paths: str | os.PathLike) -> str:
-    return os.path.join(os.path.dirname(os.path.abspath(regplates.__file__)), 'Resources', *paths)
+    if __package__:
+        return os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), __package__, *paths
+        )
+    else:
+        return os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "regplates", *paths
+        )

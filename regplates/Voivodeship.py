@@ -1,9 +1,13 @@
+if __package__:
+    from .Utils import get_resource_path
+    from .Constants import VOIVODESHIP_OPTS_PICKLE_PATH, DICTS_PICKLE_PATH, LEVENSHTEIN_MATRIX_PICKLE_PATH, EXTREME_MATRIX_PICKLE_PATH
+else:
+    from Utils import get_resource_path
+    from Constants import VOIVODESHIP_OPTS_PICKLE_PATH, DICTS_PICKLE_PATH, LEVENSHTEIN_MATRIX_PICKLE_PATH, EXTREME_MATRIX_PICKLE_PATH
+    
 import random
 import pickle
 import pandas as pd
-import regplates
-import os
-from regplates.Utils import get_resource_path
 
 def import_list(file_name):
     with open(file_name, 'rb') as file:
@@ -58,11 +62,11 @@ class Voivodeship:
         self.level = level
         self.mode = mode
         self.already_selected = {}
-        self.voivodeship_options = import_list(get_resource_path('voivodeship_options'))
-        self.loaded_dicts = import_list(get_resource_path('dicts.pickle3'))
+        self.voivodeship_options = import_list(get_resource_path(VOIVODESHIP_OPTS_PICKLE_PATH))
+        self.loaded_dicts = import_list(get_resource_path(DICTS_PICKLE_PATH))
         self.merged_dicts = self.dictionary_merge()
-        self.levenshtein_matrix = pd.read_pickle(get_resource_path('levenshtein_matrix.pickle'))
-        self.extreme_matrix = pd.read_pickle(get_resource_path('extreme_matrix.pickle'))
+        self.levenshtein_matrix = pd.read_pickle(get_resource_path(LEVENSHTEIN_MATRIX_PICKLE_PATH))
+        self.extreme_matrix = pd.read_pickle(get_resource_path(EXTREME_MATRIX_PICKLE_PATH))
         if not self.voivodeship == self.voivodeship_options[-1]:
             self.all = len(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)])
         else:

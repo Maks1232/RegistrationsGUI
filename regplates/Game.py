@@ -318,9 +318,8 @@ class Game:
         if self.mode == 1:
             if self.questions_left - self.voivodeship.all == 0:
                 self.score_percentage = round(
-                    100
-                    * self._score
-                    / (self.multiplier * self.voivodeship.all))
+                    100 * self._score
+                    / self.multiplier)
             else:
                 self.score_percentage = round(
                     100

@@ -21,13 +21,12 @@ class AnswerRect:
     random_plate()
        a method used to make text content inside the answer block update
     """
+
     def __init__(self, x, y, width, height, text, manager):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.button = pygame_gui.elements.UIButton(
-            relative_rect=self.rect,
-            text=text,
-            manager=manager
+            relative_rect=self.rect, text=text, manager=manager
         )
 
     def update_text(self, new_text):

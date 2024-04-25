@@ -1,10 +1,22 @@
 if __package__:
     from .Utils import get_resource_path
-    from .Constants import VOIVODESHIP_OPTIONS_LIST, DICTS_JSON_PATH, EXTREME_MATRIX_CSV_PATH, LEVENSHTEIN_MATRIX_CSV_PATH, Level
+    from .Constants import (
+        VOIVODESHIP_OPTIONS_LIST,
+        DICTS_JSON_PATH,
+        EXTREME_MATRIX_CSV_PATH,
+        LEVENSHTEIN_MATRIX_CSV_PATH,
+        Level,
+    )
 else:
     from Utils import get_resource_path
-    from Constants import VOIVODESHIP_OPTIONS_LIST, DICTS_JSON_PATH, EXTREME_MATRIX_CSV_PATH, LEVENSHTEIN_MATRIX_CSV_PATH, Level
-    
+    from Constants import (
+        VOIVODESHIP_OPTIONS_LIST,
+        DICTS_JSON_PATH,
+        EXTREME_MATRIX_CSV_PATH,
+        LEVENSHTEIN_MATRIX_CSV_PATH,
+        Level,
+    )
+
 import random
 import pandas as pd
 import json
@@ -52,19 +64,28 @@ class Voivodeship:
     ask_question()
         a method which returns registration plate, belonged city name and four element list with th drawn answers
     """
+
     def __init__(self, voivodeship, level, mode=1):
         self.voivodeship = voivodeship
         self.level = level
         self.mode = mode
         self.already_selected = {}
         self.voivodeship_options = VOIVODESHIP_OPTIONS_LIST
-        with open(get_resource_path(DICTS_JSON_PATH), encoding='utf8') as dicts_file:
+        with open(get_resource_path(DICTS_JSON_PATH), encoding="utf8") as dicts_file:
             self.loaded_dicts = json.load(dicts_file)
         self.merged_dicts = self.dictionary_merge()
-        self.levenshtein_matrix = pd.read_csv(get_resource_path(LEVENSHTEIN_MATRIX_CSV_PATH), index_col=0, encoding='utf-8')
-        self.extreme_matrix = pd.read_csv(get_resource_path(EXTREME_MATRIX_CSV_PATH), index_col=0, encoding='utf-8')
+        self.levenshtein_matrix = pd.read_csv(
+            get_resource_path(LEVENSHTEIN_MATRIX_CSV_PATH),
+            index_col=0,
+            encoding="utf-8",
+        )
+        self.extreme_matrix = pd.read_csv(
+            get_resource_path(EXTREME_MATRIX_CSV_PATH), index_col=0, encoding="utf-8"
+        )
         if not self.voivodeship == self.voivodeship_options[-1]:
-            self.all = len(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)])
+            self.all = len(
+                self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)]
+            )
         else:
             self.all = 409
 
@@ -72,25 +93,48 @@ class Voivodeship:
 
         if self.voivodeship == self.voivodeship_options[-1]:
             if self.mode == 1:
-                plate, county = random.choice(list(self.merged_dicts.items() - self.already_selected.items()))
+                plate, county = random.choice(
+                    list(self.merged_dicts.items() - self.already_selected.items())
+                )
             else:
                 plate, county = random.choice(list(self.merged_dicts.items()))
 
         elif self.level == Level.HARD.value:
             if self.mode == 1:
                 plate, county = random.choice(
-                    list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items() -
-                         self.already_selected.items()))
+                    list(
+                        self.loaded_dicts[
+                            self.voivodeship_options.index(self.voivodeship)
+                        ].items()
+                        - self.already_selected.items()
+                    )
+                )
             else:
-                plate, county = random.choice(list(
-                    self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items()))
+                plate, county = random.choice(
+                    list(
+                        self.loaded_dicts[
+                            self.voivodeship_options.index(self.voivodeship)
+                        ].items()
+                    )
+                )
         else:
             if self.mode == 1:
-                plate, county = random.choice(list(self.loaded_dicts[self.voivodeship_options.index(
-                    self.voivodeship)].items() - self.already_selected.items()))
+                plate, county = random.choice(
+                    list(
+                        self.loaded_dicts[
+                            self.voivodeship_options.index(self.voivodeship)
+                        ].items()
+                        - self.already_selected.items()
+                    )
+                )
             else:
-                plate, county = random.choice(list(self.loaded_dicts[self.voivodeship_options.index(
-                    self.voivodeship)].items()))
+                plate, county = random.choice(
+                    list(
+                        self.loaded_dicts[
+                            self.voivodeship_options.index(self.voivodeship)
+                        ].items()
+                    )
+                )
 
         return plate, county
 
@@ -133,14 +177,22 @@ class Voivodeship:
         iterator = 0
 
         while len(answers) < 4:
-            if self.voivodeship == self.voivodeship_options[-1] and self.level == Level.MEDIUM.value:
+            if (
+                self.voivodeship == self.voivodeship_options[-1]
+                and self.level == Level.MEDIUM.value
+            ):
                 random_answer = random.choice(list(self.merged_dicts.values()))
             elif self.level == Level.HARD.value or self.level == Level.EXTREME.value:
                 random_answer = col.index[iterator]
                 iterator += 1
             else:
                 random_answer = random.choice(
-                    list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].values()))
+                    list(
+                        self.loaded_dicts[
+                            self.voivodeship_options.index(self.voivodeship)
+                        ].values()
+                    )
+                )
 
             if random_answer not in answers:
                 answers.append(random_answer)

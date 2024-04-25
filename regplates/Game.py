@@ -16,6 +16,7 @@ from tkinter import messagebox
 
 reg_template = pygame.image.load(get_resource_path(REG_TEMPLATE_IMAGE_PATH))
 
+
 class Game:
     """
     A class used to manage game session view including interactive answer blocks handling and information displaying
@@ -92,6 +93,7 @@ class Game:
         If method returns that exception it is a signal that the registration plate indices pool is empty
 
     """
+
     def __init__(self, screen, active_option, active_level_option, mode, nickname):
         self.screen = screen
         self.active_option = active_option
@@ -101,41 +103,61 @@ class Game:
         self._play = True
         self._score = 0
         self.manager = pygame_gui.UIManager((screen.get_width(), screen.get_height()))
-        self.voivodeship = Voivodeship(voivodeship=self.active_option, level=self.active_level_option, mode=self.mode)
+        self.voivodeship = Voivodeship(
+            voivodeship=self.active_option,
+            level=self.active_level_option,
+            mode=self.mode,
+        )
         self.registration, self.county, self.answers = self.voivodeship.ask_question()
         self.questions_left = self.voivodeship.all
         self.answer_blocks = [
-            AnswerRect(0.1 * screen.get_width(),
-                       0.47 * screen.get_height(),
-                       0.5 * screen.get_height(),
-                       0.1 * screen.get_height(),
-                       self.answers[0], self.manager),
-            AnswerRect(0.9 * screen.get_width() - 0.5 * screen.get_height(),
-                       0.47 * screen.get_height(),
-                       0.5 * screen.get_height(),
-                       0.1 * screen.get_height(),
-                       self.answers[1], self.manager),
-            AnswerRect(0.1 * screen.get_width(),
-                       0.67 * screen.get_height(),
-                       0.5 * screen.get_height(),
-                       0.1 * screen.get_height(),
-                       self.answers[2], self.manager),
-            AnswerRect(0.9 * screen.get_width() - 0.5 * screen.get_height(),
-                       0.67 * screen.get_height(),
-                       0.5 * screen.get_height(),
-                       0.1 * screen.get_height(),
-                       self.answers[3], self.manager),
+            AnswerRect(
+                0.1 * screen.get_width(),
+                0.47 * screen.get_height(),
+                0.5 * screen.get_height(),
+                0.1 * screen.get_height(),
+                self.answers[0],
+                self.manager,
+            ),
+            AnswerRect(
+                0.9 * screen.get_width() - 0.5 * screen.get_height(),
+                0.47 * screen.get_height(),
+                0.5 * screen.get_height(),
+                0.1 * screen.get_height(),
+                self.answers[1],
+                self.manager,
+            ),
+            AnswerRect(
+                0.1 * screen.get_width(),
+                0.67 * screen.get_height(),
+                0.5 * screen.get_height(),
+                0.1 * screen.get_height(),
+                self.answers[2],
+                self.manager,
+            ),
+            AnswerRect(
+                0.9 * screen.get_width() - 0.5 * screen.get_height(),
+                0.67 * screen.get_height(),
+                0.5 * screen.get_height(),
+                0.1 * screen.get_height(),
+                self.answers[3],
+                self.manager,
+            ),
         ]
         self.multiplier = self.multiplier()
-        self.score_percentage = round(100 * self._score / (self.multiplier * self.voivodeship.all))
+        self.score_percentage = round(
+            100 * self._score / (self.multiplier * self.voivodeship.all)
+        )
 
         self.exit_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(0.9 * self.screen.get_width() - 0.25 * self.screen.get_height(),
-                                      0.86 * self.screen.get_height(),
-                                      0.25 * self.screen.get_height(),
-                                      0.04 * self.screen.get_height()),
-            text='Wyjdź',
-            manager=self.manager
+            relative_rect=pygame.Rect(
+                0.9 * self.screen.get_width() - 0.25 * self.screen.get_height(),
+                0.86 * self.screen.get_height(),
+                0.25 * self.screen.get_height(),
+                0.04 * self.screen.get_height(),
+            ),
+            text="Wyjdź",
+            manager=self.manager,
         )
         self.update_question_info()
         self.update_score_info()
@@ -201,11 +223,13 @@ class Game:
         df = pd.read_csv(file)
         df.sort_values(by=df.columns[-1], ascending=False, inplace=True)
 
-        updater = pd.DataFrame(columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"])
-        updater.at[0, 'Nazwa'] = self.nickname
-        updater.at[0, 'Poziom'] = self.active_level_option
-        updater.at[0, 'Województwo'] = self.active_option
-        updater.at[0, 'Skuteczność[%]'] = self.score_percentage
+        updater = pd.DataFrame(
+            columns=["Nazwa", "Poziom", "Województwo", "Skuteczność[%]"]
+        )
+        updater.at[0, "Nazwa"] = self.nickname
+        updater.at[0, "Poziom"] = self.active_level_option
+        updater.at[0, "Województwo"] = self.active_option
+        updater.at[0, "Skuteczność[%]"] = self.score_percentage
 
         df = pd.concat([updater, df], ignore_index=True)
         df = df.sort_values(by="Skuteczność[%]", ascending=False).head(50)
@@ -213,7 +237,9 @@ class Game:
 
     def next_question(self):
         try:
-            self.registration, self.county, self.answers = self.voivodeship.ask_question()
+            self.registration, self.county, self.answers = (
+                self.voivodeship.ask_question()
+            )
         except IndexError as e:
             print(e)
             self.notification()
@@ -232,16 +258,38 @@ class Game:
         font = pygame.font.Font(None, 72)
         reg_surface = font.render(self.registration, True, Color.BLACK.value)
         font = pygame.font.Font(None, 40)
-        user_information = font.render("Wybierz nazwę miejscowości, której odpowiada wyświetlany "
-                                       "powyżej indeks rejestracyjny:", True, Color.DARK_BLUE.value)
+        user_information = font.render(
+            "Wybierz nazwę miejscowości, której odpowiada wyświetlany "
+            "powyżej indeks rejestracyjny:",
+            True,
+            Color.DARK_BLUE.value,
+        )
 
-        self.screen.blit(reg_template, (0.5 * self.screen.get_width() - 0.5 * reg_template.get_width(),
-                                        0.04 * self.screen.get_height()))
-        self.screen.blit(reg_surface, (0.5 * self.screen.get_width() + 0.12085 * reg_template.get_width() -
-                                       0.5 * reg_surface.get_width(), 0.04 * self.screen.get_height() +
-                                       0.5 * reg_template.get_height() - 0.42 * reg_surface.get_height()))
-        self.screen.blit(user_information, (0.5 * self.screen.get_width() - 0.5 * user_information.get_width(),
-                                            0.04 * self.screen.get_height() + 2 * reg_template.get_height()))
+        self.screen.blit(
+            reg_template,
+            (
+                0.5 * self.screen.get_width() - 0.5 * reg_template.get_width(),
+                0.04 * self.screen.get_height(),
+            ),
+        )
+        self.screen.blit(
+            reg_surface,
+            (
+                0.5 * self.screen.get_width()
+                + 0.12085 * reg_template.get_width()
+                - 0.5 * reg_surface.get_width(),
+                0.04 * self.screen.get_height()
+                + 0.5 * reg_template.get_height()
+                - 0.42 * reg_surface.get_height(),
+            ),
+        )
+        self.screen.blit(
+            user_information,
+            (
+                0.5 * self.screen.get_width() - 0.5 * user_information.get_width(),
+                0.04 * self.screen.get_height() + 2 * reg_template.get_height(),
+            ),
+        )
 
         for block in self.answer_blocks:
             block.button.update(delta)
@@ -253,21 +301,39 @@ class Game:
     def update_question_info(self):
         if self.mode == 1:
             font = pygame.font.Font(None, 48)
-            text = font.render(f"Pozostało: {self.questions_left}", True, Color.BLACK.value)
-            self.screen.blit(text, (0.1 * self.screen.get_width(),
-                                    0.04 * self.screen.get_height() + 0.5 * text.get_height()))
+            text = font.render(
+                f"Pozostało: {self.questions_left}", True, Color.BLACK.value
+            )
+            self.screen.blit(
+                text,
+                (
+                    0.1 * self.screen.get_width(),
+                    0.04 * self.screen.get_height() + 0.5 * text.get_height(),
+                ),
+            )
 
     def update_score_info(self):
 
         font = pygame.font.Font(None, 48)
         if self.mode == 1:
-            self.score_percentage = round(100 * self._score / (self.multiplier * (self.voivodeship.all - self.questions_left)))
-            text = font.render(f"Twój wynik: {self.score_percentage}%", True, Color.BLACK.value)
+            self.score_percentage = round(
+                100
+                * self._score
+                / (self.multiplier * (self.voivodeship.all - self.questions_left))
+            )
+            text = font.render(
+                f"Twój wynik: {self.score_percentage}%", True, Color.BLACK.value
+            )
         else:
             text = font.render(f"Twój wynik: {self._score }", True, Color.BLACK.value)
 
-        self.screen.blit(text, (0.9 * self.screen.get_width() - text.get_width(),
-                                0.04 * self.screen.get_height() + 0.5 * text.get_height()))
+        self.screen.blit(
+            text,
+            (
+                0.9 * self.screen.get_width() - text.get_width(),
+                0.04 * self.screen.get_height() + 0.5 * text.get_height(),
+            ),
+        )
 
     def handle_answer_click(self, clicked_block):
         for block in self.answer_blocks:
@@ -286,7 +352,10 @@ class Game:
 
     @staticmethod
     def exit_execute():
-        if messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść?") == "no":
+        if (
+            messagebox.askquestion("Potwierdzenie", "Czy na pewno chcesz wyjść?")
+            == "no"
+        ):
             return True
 
     @staticmethod
@@ -295,6 +364,8 @@ class Game:
 
     @staticmethod
     def config_notification():
-        messagebox.showinfo("Zmień konfigurację",
-                            'Dla obszaru wszystkich województw rozgrywka zaczyna się od poziomu medium '
-                            '\n\nWybierz odpowiedni poziom trudności!')
+        messagebox.showinfo(
+            "Zmień konfigurację",
+            "Dla obszaru wszystkich województw rozgrywka zaczyna się od poziomu medium "
+            "\n\nWybierz odpowiedni poziom trudności!",
+        )

@@ -2,12 +2,12 @@ if __package__:
     from .AnswerRect import AnswerRect
     from .Voivodeship import Voivodeship
     from .Utils import get_resource_path
-    from .Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color
+    from .Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color, Level
 else:
     from AnswerRect import AnswerRect
     from Voivodeship import Voivodeship
     from Utils import get_resource_path
-    from Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color
+    from Constants import REG_TEMPLATE_IMAGE_PATH, RANKING_XLSX_PATH, Color, Level
 
 import pygame
 import pygame_gui
@@ -176,24 +176,23 @@ class Game:
             pygame.display.flip()
 
     def multiplier(self):
-        level_base = ["Easy", "Medium", "Hard", "Extreme"]
         a = 0
 
         if self.active_option == self.voivodeship.voivodeship_options[-1]:
             b = 3
-            if self.active_level_option == level_base[-1]:
+            if self.active_level_option == Level.EXTREME.value:
                 a = 2
-            elif self.active_level_option == level_base[-2]:
+            elif self.active_level_option == Level.HARD.value:
                 a = 1
-            elif self.active_level_option == level_base[-4]:
+            elif self.active_level_option == Level.EASY.value:
                 a = -1
         else:
             b = 1
-            if self.active_level_option == level_base[-1]:
+            if self.active_level_option == Level.EXTREME.value:
                 a = 3
-            elif self.active_level_option == level_base[-2]:
+            elif self.active_level_option == Level.HARD.value:
                 a = 2
-            elif self.active_level_option == level_base[-3]:
+            elif self.active_level_option == Level.MEDIUM.value:
                 a = 1
 
         return a + b

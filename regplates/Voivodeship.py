@@ -1,9 +1,9 @@
 if __package__:
     from .Utils import get_resource_path
-    from .Constants import VOIVODESHIP_OPTIONS_LIST, DICTS_JSON_PATH, EXTREME_MATRIX_CSV_PATH, LEVENSHTEIN_MATRIX_CSV_PATH
+    from .Constants import VOIVODESHIP_OPTIONS_LIST, DICTS_JSON_PATH, EXTREME_MATRIX_CSV_PATH, LEVENSHTEIN_MATRIX_CSV_PATH, Level
 else:
     from Utils import get_resource_path
-    from Constants import VOIVODESHIP_OPTIONS_LIST, DICTS_JSON_PATH, EXTREME_MATRIX_CSV_PATH, LEVENSHTEIN_MATRIX_CSV_PATH
+    from Constants import VOIVODESHIP_OPTIONS_LIST, DICTS_JSON_PATH, EXTREME_MATRIX_CSV_PATH, LEVENSHTEIN_MATRIX_CSV_PATH, Level
     
 import random
 import pandas as pd
@@ -76,7 +76,7 @@ class Voivodeship:
             else:
                 plate, county = random.choice(list(self.merged_dicts.items()))
 
-        elif self.level == "Hard":
+        elif self.level == Level.HARD.value:
             if self.mode == 1:
                 plate, county = random.choice(
                     list(self.loaded_dicts[self.voivodeship_options.index(self.voivodeship)].items() -
@@ -117,12 +117,12 @@ class Voivodeship:
 
         answers = [correct_answer]
 
-        if self.level == "Hard":
+        if self.level == Level.HARD.value:
             col = self.levenshtein_matrix[correct_answer]
             if isinstance(col, pd.Series):
                 col = col.to_frame()
             col = col.sort_values(correct_answer)
-        elif self.level == "Extreme":
+        elif self.level == Level.EXTREME.value:
             col = self.extreme_matrix[correct_answer]
             if isinstance(col, pd.Series):
                 col = col.to_frame()
@@ -133,9 +133,9 @@ class Voivodeship:
         iterator = 0
 
         while len(answers) < 4:
-            if self.voivodeship == self.voivodeship_options[-1] and self.level == "Medium":
+            if self.voivodeship == self.voivodeship_options[-1] and self.level == Level.MEDIUM.value:
                 random_answer = random.choice(list(self.merged_dicts.values()))
-            elif self.level == "Hard" or self.level == 'Extreme':
+            elif self.level == Level.HARD.value or self.level == Level.EXTREME.value:
                 random_answer = col.index[iterator]
                 iterator += 1
             else:

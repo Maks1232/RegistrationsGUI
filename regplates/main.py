@@ -1,13 +1,11 @@
 if __package__:
-    from .Constants import Color, Level, RANKING_XLSX_PATH, VOIVODESHIP_OPTS_PICKLE_PATH, APP_LOGO_IMAGE_PATH
+    from .Constants import Color, Level, RANKING_XLSX_PATH, APP_LOGO_IMAGE_PATH, VOIVODESHIP_OPTIONS_LIST
     from .Utils import get_resource_path
     from .Game import Game
-    from .Voivodeship import import_list
 else:
-    from Constants import Color, Level, RANKING_XLSX_PATH, VOIVODESHIP_OPTS_PICKLE_PATH, APP_LOGO_IMAGE_PATH
+    from Constants import Color, Level, RANKING_XLSX_PATH, APP_LOGO_IMAGE_PATH, VOIVODESHIP_OPTIONS_LIST
     from Utils import get_resource_path
     from Game import Game
-    from Voivodeship import import_list
 
 from itertools import islice
 import pandas as pd
@@ -213,7 +211,7 @@ def main_function():
     mode = 0
 
     # Drop down options
-    voivodeship_options = import_list(file_name=get_resource_path(VOIVODESHIP_OPTS_PICKLE_PATH))
+    voivodeship_options = VOIVODESHIP_OPTIONS_LIST
     # Loading images
     app_logo = pygame.image.load(get_resource_path(APP_LOGO_IMAGE_PATH))
 

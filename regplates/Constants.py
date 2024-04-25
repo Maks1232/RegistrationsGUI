@@ -21,15 +21,35 @@ class Level(Enum):
     EXTREME = "Extreme"
 
 
+VOIVODESHIP_OPTIONS_LIST = [
+    "Podlaskie",
+    "Kujawsko-Pomorskie",
+    "Dolnośląskie",
+    "Łódzkie",
+    "Lubuskie",
+    "Pomorskie",
+    "Małopolskie",
+    "Lubelskie",
+    "Warmińsko-Mazurskie",
+    "Opolskie",
+    "Wielkopolskie",
+    "Podkarpackie",
+    "Śląskie",
+    "Świętokrzyskie",
+    "Mazowieckie",
+    "Zachodniopomorskie",
+    "Wszystkie",
+]
+
 RESOURCES_DIR_PATH = "Resources"
 
 IMAGES_DIR_PATH = f"{RESOURCES_DIR_PATH}/Images"
 APP_LOGO_IMAGE_PATH = f"{IMAGES_DIR_PATH}/title_v1.png"
 REG_TEMPLATE_IMAGE_PATH = f"{IMAGES_DIR_PATH}/registration_template.png"
 
-VOIVODESHIP_OPTS_PICKLE_PATH = f"{RESOURCES_DIR_PATH}/voivodeship_options"
-DICTS_PICKLE_PATH = f"{RESOURCES_DIR_PATH}/dicts.pickle3"
-LEVENSHTEIN_MATRIX_PICKLE_PATH = f"{RESOURCES_DIR_PATH}/levenshtein_matrix.pickle"
-EXTREME_MATRIX_PICKLE_PATH = f"{RESOURCES_DIR_PATH}/extreme_matrix.pickle"
+DICTS_JSON_PATH = f"{RESOURCES_DIR_PATH}/dicts.json"
+
+EXTREME_MATRIX_CSV_PATH = f"{RESOURCES_DIR_PATH}/extreme_matrix.csv"
+LEVENSHTEIN_MATRIX_CSV_PATH = f"{RESOURCES_DIR_PATH}/levenshtein_matrix.csv"
 
 RANKING_XLSX_PATH = f"{RESOURCES_DIR_PATH}/ranking.xlsx"

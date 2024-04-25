@@ -316,11 +316,17 @@ class Game:
 
         font = pygame.font.Font(None, 48)
         if self.mode == 1:
-            self.score_percentage = round(
-                100
-                * self._score
-                / (self.multiplier * (self.voivodeship.all - self.questions_left))
-            )
+            if self.questions_left - self.voivodeship.all == 0:
+                self.score_percentage = round(
+                    100
+                    * self._score
+                    / (self.multiplier * self.voivodeship.all))
+            else:
+                self.score_percentage = round(
+                    100
+                    * self._score
+                    / (self.multiplier * (self.voivodeship.all - self.questions_left))
+                )
             text = font.render(
                 f"Twój wynik: {self.score_percentage}%", True, Color.BLACK.value
             )

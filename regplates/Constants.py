@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Literal, get_args
 
 
 class Color(Enum):
@@ -21,25 +22,27 @@ class Level(Enum):
     EXTREME = "Extreme"
 
 
-VOIVODESHIP_OPTIONS_LIST = [
-    "Podlaskie",
-    "Kujawsko-Pomorskie",
-    "Dolnośląskie",
-    "Łódzkie",
-    "Lubuskie",
-    "Pomorskie",
-    "Małopolskie",
-    "Lubelskie",
-    "Warmińsko-Mazurskie",
-    "Opolskie",
-    "Wielkopolskie",
-    "Podkarpackie",
-    "Śląskie",
-    "Świętokrzyskie",
-    "Mazowieckie",
-    "Zachodniopomorskie",
-    "Wszystkie",
-]
+class Voivodeship(Enum):
+    PODLASKIE = "Podlaskie"
+    KUJAWSKO_POMORSKIE = "Kujawsko-Pomorskie"
+    DOLNOSLASKIE = "Dolnośląskie"
+    LODZKIE = "Łódzkie"
+    LUBUSKIE = "Lubuskie"
+    POMORSKIE = "Pomorskie"
+    MALOPOLSKIE = "Małopolskie"
+    LUBELSKIE = "Lubelskie"
+    WARMINSKO_MAZURSKIE = "Warmińsko-Mazurskie"
+    OPOLSKIE = "Opolskie"
+    WIELKOPOLSKIE = "Wielkopolskie"
+    PODKARPACKIE = "Podkarpackie"
+    SLASKIE = "Śląskie"
+    SWIETOKRZYSKIE = "Świętokrzyskie"
+    MAZOWIECKIE = "Mazowieckie"
+    ZACHODNIO_POMORSKIE = "Zachodniopomorskie"
+
+
+VOIVODESHIPS_ALL_T = Literal["Wszystkie"]
+VOIVODESHIPS_ALL: VOIVODESHIPS_ALL_T = get_args(VOIVODESHIPS_ALL_T)[0]
 
 RESOURCES_DIR_PATH = "Resources"
 

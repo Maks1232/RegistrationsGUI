@@ -5,7 +5,7 @@ setup(
     version='0.6',
     packages=find_packages(),
     install_requires=[
-        'pygame_gui',
+        'PyQt5',
         'pandas'
     ],
     entry_points={
@@ -13,6 +13,6 @@ setup(
             'regplates = regplates.main:main_function'],
     },
     package_data={
-        'regplates': ['Resources/**']
+        'regplates': ['Resources/*', 'Resources/Images/*']
     }
 )
